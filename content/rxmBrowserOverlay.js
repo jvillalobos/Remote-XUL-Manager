@@ -29,15 +29,10 @@ RXULMChrome.BrowserOverlay = {
   /**
    * Opens the Remote XUL Manager dialog.
    */
-  launchCreateDialog : function(aEvent) {
-    this._logger.debug("launchCreateDialog");
-
+  launchManager : function(aEvent) {
     window.openDialog(
       "chrome://remotexulmanager/content/rxmManager.xul",
       "remotexulmanager-manager-dialog",
       "chrome,titlebar,centerscreen,dialog,resizable=no");
   }
 };
-
-window.addEventListener(
-  "load", function() { RXULMChrome.BrowserOverlay.init(); }, false);

@@ -18,21 +18,19 @@
 
 <?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
 
-<!DOCTYPE overlay [
-  <!ENTITY % overlayDTD SYSTEM "chrome://remotexulmanager/locale/rxmBrowserOverlay.dtd" >
-  %overlayDTD;
-]>
+<!DOCTYPE overlay SYSTEM "chrome://remotexulmanager/locale/rxmBrowserOverlay.dtd">
 
 <overlay id="powersearchbox-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript"
-    src="chrome://powersearchbox/content/rxmBrowserOverlay.js" />
+    src="chrome://remotexulmanager/content/rxmBrowserOverlay.js" />
 
   <menupopup id="menu_ToolsPopup">
     <menuitem id="rxm-main-menu"
       insertafter="javascriptConsole,devToolsSeparator"
-      label="&rxm.menu.label;" accesskey="&rxm.menu.accesskey;" />
+      label="&rxm.menu.label;" accesskey="&rxm.menu.accesskey;"
+      oncommand="RXULMChrome.BrowserOverlay.launchManager(event);" />
   </menupopup>
 
 </overlay>

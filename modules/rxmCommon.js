@@ -55,6 +55,11 @@ if ("undefined" == typeof(RXULM)) {
 
       // get a Logger specifically for this object.
       this._logger = this.getLogger("RXM");
+
+      this.stringBundle =
+        Cc["@mozilla.org/intl/stringbundle;1"].
+          getService(Ci.nsIStringBundleService).
+            createBundle("chrome://remotexulmanager/locale/rxm.properties");
     },
 
     /**
