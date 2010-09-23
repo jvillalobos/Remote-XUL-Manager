@@ -63,9 +63,7 @@ RXULMChrome.Manager = {
 
       for (let i = 0; i < allowedCount; i++) {
         item = document.createElement("listitem");
-        // XXX: the interface only allows full nsIURI, including the protocol
-        // section, while the return values are just host names. Fail.
-        item.setAttribute("label", ("http(s)://" + allowed[i]));
+        item.setAttribute("label", allowed[i]);
         item.setAttribute("value", allowed[i]);
         domains.appendChild(item);
       }
@@ -92,7 +90,7 @@ RXULMChrome.Manager = {
       RXULM.stringBundle.GetStringFromName("rxm.enterDomain.label"), domain,
       null, { value : false });
 
-    success = RXULM.Permissions.add(domain.value);
+    success = RXULM.Permissions.add(this._addDomainProtocol(domain.value));
 
     if (!success) {
       promptService.alert(
@@ -101,6 +99,27 @@ RXULMChrome.Manager = {
     } else {
       this._loadPermissions();
     }
+  },
+
+  /**
+   * Checks if the domain need the protocol to be added to it, and adds it when
+   * necessary.
+   * @param aDomain the domain string entered by the user. Normally something
+   * like 'www.mozilla.com'.
+   * @return domain with protocol, like 'http://www.mozilla.com'.
+   */
+  _addDomainProtocol : function(aDomain) {
+    this._logger.trace("_addDomainProtocol");
+
+    let domain = aDomain;
+
+    // if there's no protocol, add it.
+    if ((0 != aDomain.indexOf("http://")) &&
+        (0 != aDomain.indexOf("https://"))) {
+      domain = "http://" + aDomain;
+    }
+
+    return domain;
   },
 
   /**
