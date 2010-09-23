@@ -105,11 +105,9 @@ RXULM.Permissions = {
     this._logger.debug("remove: " + aDomain);
 
     let result = false;
-    let uri;
 
     try {
-      uri = this._getURI(aDomain);
-      this._permissionManager.remove(uri, ALLOW_REMOTE_XUL, ALLOW);
+      this._permissionManager.remove(aDomain, ALLOW_REMOTE_XUL);
       result = true;
     } catch (e) {
       this._logger.error("remove\n" + e);

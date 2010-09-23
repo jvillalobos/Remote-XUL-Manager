@@ -63,7 +63,9 @@ RXULMChrome.Manager = {
 
       for (let i = 0; i < allowedCount; i++) {
         item = document.createElement("listitem");
-        item.setAttribute("label", allowed[i]);
+        // XXX: the interface only allows full nsIURI, including the protocol
+        // section, while the return values are just host names. Fail.
+        item.setAttribute("label", ("http(s)://" + allowed[i]));
         item.setAttribute("value", allowed[i]);
         domains.appendChild(item);
       }
@@ -99,8 +101,59 @@ RXULMChrome.Manager = {
     } else {
       this._loadPermissions();
     }
-  }
+  },
 
+  /**
+   * Removes the selected domains from the list.
+   * @param aEvent the event that triggered this action.
+   */
+  remove : function(aEvent) {
+    this._logger.debug("remove");
+
+    let promptService =
+      Cc["@mozilla.org/embedcomp/prompt-service;1"].
+        getService(Ci.nsIPromptService);
+    let selected = document.getElementById("domains").selectedItems;
+    let count = selected.length;
+    let message =
+      ((1 == count) ?
+       RXULM.stringBundle.GetStringFromName("rxm.removeOne.label") :
+       RXULM.stringBundle.formatStringFromName(
+        "rxm.removeMany.label", [ count ], 1));
+    let doRemove;
+    let item;
+
+    doRemove =
+      promptService.confirm(
+        window, RXULM.stringBundle.GetStringFromName("rxm.removeDomain.title"),
+        message);
+
+    if (doRemove) {
+      try {
+        for (let i = 0; i < count; i ++) {
+          item = selected[i];
+          RXULM.Permissions.remove(item.getAttribute("value"));
+        }
+      } catch (e) {
+        this._logger.debug("remove\n" + e);
+      }
+
+      this._loadPermissions();
+    }
+  },
+
+  /**
+   * onselect event handler. Decides when to enable or disable the remove
+   * button.
+   */
+  select : function (aEvent) {
+    this._logger.debug("select");
+
+    let removeButton = document.getElementById("remove");
+    let listbox = document.getElementById("domains");
+
+    removeButton.disabled = (0 == listbox.selectedCount);
+  }
 };
 
 window.addEventListener(

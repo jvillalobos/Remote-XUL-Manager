@@ -25,7 +25,7 @@
     <em:description>
       Manages the Remote XUL whitelist.
     </em:description>
-    <em:version>0.1</em:version>
+    <em:version>0.5</em:version>
     <em:creator>Jorge Villalobos</em:creator>
     <em:homepageURL>
       http://github.com/jvillalobos/Remote-XUL-Manager

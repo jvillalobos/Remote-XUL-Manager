@@ -31,14 +31,14 @@
     src="chrome://remotexulmanager/content/rxmManager.js" />
 
   <label control="domains" value="&remotexulmanager.allowed.label;" />
-  <listbox id="domains" rows="15">
-  </listbox>
+  <listbox id="domains" rows="15" seltype="multiple"
+    onselect="RXULMChrome.Manager.select(event);" />
   <hbox id="button-container">
     <button id="add" label="&remotexulmanager.add.label;"
       accesskey="&remotexulmanager.add.accesskey;"
       oncommand="RXULMChrome.Manager.add(event);" />
     <spacer flex="1" />
-    <button id="remove" label="&remotexulmanager.remove.label;"
+    <button id="remove" disabled="true" label="&remotexulmanager.remove.label;"
       accesskey="&remotexulmanager.remove.accesskey;"
       oncommand="RXULMChrome.Manager.remove(event);" />
   </hbox>
