@@ -26,9 +26,17 @@
   <script type="application/x-javascript"
     src="chrome://remotexulmanager/content/rxmBrowserOverlay.js" />
 
+  <!-- Main menu. -->
   <menupopup id="menu_ToolsPopup">
     <menuitem id="rxm-main-menu"
       insertafter="javascriptConsole,devToolsSeparator"
+      label="&rxm.menu.label;" accesskey="&rxm.menu.accesskey;"
+      oncommand="RXULMChrome.BrowserOverlay.launchManager(event);" />
+  </menupopup>
+
+  <!-- App button menu. -->
+  <menupopup id="appmenu_developer_popup">
+    <menuitem id="rxm-app-menu" insertbefore="apmenu_pageInspect"
       label="&rxm.menu.label;" accesskey="&rxm.menu.accesskey;"
       oncommand="RXULMChrome.BrowserOverlay.launchManager(event);" />
   </menupopup>
