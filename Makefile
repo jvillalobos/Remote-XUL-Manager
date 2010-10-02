@@ -63,6 +63,7 @@ clean:
 # Makefiles.
 xpi_built := install.rdf \
              chrome.manifest \
+             icon.png \
              $(wildcard content/*.js) \
              $(wildcard content/*.xul) \
              $(wildcard content/*.xml) \
