@@ -50,7 +50,7 @@ if ("undefined" == typeof(RXULM)) {
 
       // this appender will log to the file system.
       app = new Log4Moz.RotatingFileAppender(logFile, formatter);
-      app.level = Log4Moz.Level["All"]; // change this line to adjust level.
+      app.level = Log4Moz.Level["Warn"]; // change this line to adjust level.
       root.addAppender(app);
 
       // get a Logger specifically for this object.
