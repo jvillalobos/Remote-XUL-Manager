@@ -54,6 +54,7 @@ RXULMChrome.Manager = {
       let domains = document.getElementById("domains");
       let allowed = RXULM.Permissions.getAll();
       let allowedCount = allowed.length;
+      let justAddedLocal = false;
       let item;
 
       // clear the current list.
@@ -63,8 +64,27 @@ RXULMChrome.Manager = {
 
       for (let i = 0; i < allowedCount; i++) {
         item = document.createElement("listitem");
-        item.setAttribute("label", allowed[i]);
-        item.setAttribute("value", allowed[i]);
+
+        if (RXULM.Permissions.LOCAL_FILES != allowed[i]) {
+          item.setAttribute("label", allowed[i]);
+          item.setAttribute("value", allowed[i]);
+        } else {
+          item.setAttribute(
+            "label", RXULM.stringBundle.GetStringFromName("rxm.file.label"));
+          item.setAttribute("value", RXULM.Permissions.LOCAL_FILES);
+          justAddedLocal = true;
+        }
+
+        domains.appendChild(item);
+      }
+
+      // adds the "local files" item in case it was added by the user in this
+      // session (the DB doesn't reload).
+      if (!justAddedLocal && RXULM.Permissions.addedLocal) {
+        item = document.createElement("listitem");
+        item.setAttribute(
+          "label", RXULM.stringBundle.GetStringFromName("rxm.file.label"));
+        item.setAttribute("value", RXULM.Permissions.LOCAL_FILES);
         domains.appendChild(item);
       }
     } catch (e) {
@@ -83,21 +103,37 @@ RXULMChrome.Manager = {
       Cc["@mozilla.org/embedcomp/prompt-service;1"].
         getService(Ci.nsIPromptService);
     let domain = { value : "" };
-    let success;
+    let promptResponse;
+    let result;
 
-    promptService.prompt(
-      window, RXULM.stringBundle.GetStringFromName("rxm.addDomain.title"),
-      RXULM.stringBundle.GetStringFromName("rxm.enterDomain.label"), domain,
-      null, { value : false });
-
-    success = RXULM.Permissions.add(this._addDomainProtocol(domain.value));
-
-    if (!success) {
-      promptService.alert(
+    promptResponse =
+      promptService.prompt(
         window, RXULM.stringBundle.GetStringFromName("rxm.addDomain.title"),
-        RXULM.stringBundle.GetStringFromName("rxm.invalidDomain.label"));
-    } else {
-      this._loadPermissions();
+        RXULM.stringBundle.formatStringFromName(
+          "rxm.enterDomain.label", [ RXULM.Permissions.LOCAL_FILES ], 1),
+        domain, null, { value : false });
+
+    if (promptResponse) {
+      result = RXULM.Permissions.add(this._addDomainProtocol(domain.value));
+
+      if (RXULM.Permissions.RESULT_FAIL != result) {
+        if (RXULM.Permissions.RESULT_RESTART == result) {
+          let brand =
+            document.getElementById("brand-bundle").getString("brandShortName");
+
+          RXULM.Permissions.addedLocal = true;
+          promptService.alert(
+            window, RXULM.stringBundle.GetStringFromName("rxm.addDomain.title"),
+            RXULM.stringBundle.formatStringFromName(
+              "rxm.restart.label", [ brand ], 1));
+        }
+
+        this._loadPermissions();
+      } else {
+        promptService.alert(
+          window, RXULM.stringBundle.GetStringFromName("rxm.addDomain.title"),
+          RXULM.stringBundle.GetStringFromName("rxm.invalidDomain.label"));
+      }
     }
   },
 
@@ -106,7 +142,8 @@ RXULMChrome.Manager = {
    * necessary.
    * @param aDomain the domain string entered by the user. Normally something
    * like 'www.mozilla.com'.
-   * @return domain with protocol, like 'http://www.mozilla.com'.
+   * @return domain with protocol, like 'http://www.mozilla.com'. null if the
+   * domain is "file" (special case).
    */
   _addDomainProtocol : function(aDomain) {
     this._logger.trace("_addDomainProtocol");
@@ -114,7 +151,8 @@ RXULMChrome.Manager = {
     let domain = aDomain;
 
     // if there's no protocol, add it.
-    if ((0 != aDomain.indexOf("http://")) &&
+    if ((RXULM.Permissions.LOCAL_FILES != aDomain) &&
+        (0 != aDomain.indexOf("http://")) &&
         (0 != aDomain.indexOf("https://"))) {
       domain = "http://" + aDomain;
     }
@@ -139,8 +177,10 @@ RXULMChrome.Manager = {
        RXULM.stringBundle.GetStringFromName("rxm.removeOne.label") :
        RXULM.stringBundle.formatStringFromName(
         "rxm.removeMany.label", [ count ], 1));
+    let needsRestart = false;
     let doRemove;
     let item;
+    let result;
 
     doRemove =
       promptService.confirm(
@@ -151,10 +191,24 @@ RXULMChrome.Manager = {
       try {
         for (let i = 0; i < count; i ++) {
           item = selected[i];
-          RXULM.Permissions.remove(item.getAttribute("value"));
+          result = RXULM.Permissions.remove(item.getAttribute("value"));
+          needsRestart =
+            (needsRestart || (RXULM.Permissions.RESULT_RESTART == result));
         }
       } catch (e) {
         this._logger.debug("remove\n" + e);
+      }
+
+      if (needsRestart) {
+          let brand =
+            document.getElementById("brand-bundle").getString("brandShortName");
+
+          RXULM.Permissions.addedLocal = false;
+          promptService.alert(
+            window,
+            RXULM.stringBundle.GetStringFromName("rxm.removeDomain.title"),
+            RXULM.stringBundle.formatStringFromName(
+              "rxm.restart.label", [ brand ], 1));
       }
 
       this._loadPermissions();

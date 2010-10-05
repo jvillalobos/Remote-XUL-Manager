@@ -23,6 +23,11 @@ const Ci = Components.interfaces;
 const ALLOW_REMOTE_XUL = "allowXULXBL";
 const ALLOW = 1;
 
+// SQL statements for the permissions DB.
+const SQL_ADD =
+  "INSERT INTO moz_hosts values(?, '<file>', '" + ALLOW_REMOTE_XUL +
+  "', 1, 0, 0)";
+
 Components.utils.import("resource://remotexulmanager/rxmCommon.js");
 
 RXULM.Permissions = {
@@ -32,6 +37,19 @@ RXULM.Permissions = {
   _permissionManager : null,
   /* IO Service. */
   _ioService : null,
+
+  /* Indicates if the "local files" item was added in this session. The DB
+     doesn't reload in this case, so we need to be hackish.
+     And yes, this is a public variable. Sue me :P */
+  addedLocal : false,
+
+  /* Posible return codes for the add and remove calls. */
+  get RESULT_FAIL() { return -1; },
+  get RESULT_SUCCESS() { return 0; },
+  get RESULT_RESTART() { return 1; },
+
+  /* "Domain" identifier for all local files. */
+  get LOCAL_FILES() { return "<file>"; },
 
   /**
    * Initializes the object.
@@ -76,19 +94,24 @@ RXULM.Permissions = {
 
   /**
    * Add a domain to the remote XUL list.
-   * @param aDomain the domain to add.
-   * @return true if the operation worked correctly, false otherwise.
+   * @param aDomain the domain to add. null to add all local files.
+   * @return one of the RESULT_ constants in this object.
    */
   add : function(aDomain) {
     this._logger.debug("add: " + aDomain);
 
-    let result = false;
-    let uri;
+    let result = this.RESULT_FAIL;
 
     try {
-      uri = this._getURI(aDomain);
-      this._permissionManager.add(uri, ALLOW_REMOTE_XUL, ALLOW);
-      result = true;
+      if (this.LOCAL_FILES != aDomain) {
+        let uri = this._getURI(aDomain);
+
+        this._permissionManager.add(uri, ALLOW_REMOTE_XUL, ALLOW);
+        result = this.RESULT_SUCCESS;
+      } else {
+        this._addFile();
+        result = this.RESULT_RESTART;
+      }
     } catch (e) {
       this._logger.error("add\n" + e);
     }
@@ -97,18 +120,32 @@ RXULM.Permissions = {
   },
 
   /**
+   * Adds the special <file> entry to the permissions DB.
+   */
+  _addFile : function() {
+    this._logger.trace("_addFile");
+
+    let connection = this._getDBConnection();
+
+    connection.executeSimpleSQL(SQL_ADD);
+    connection.close();
+  },
+
+  /**
    * Remove a domain from the remote XUL list.
    * @param aDomain the domain to remove.
-   * @return true if the operation worked correctly, false otherwise.
+   * @return one of the RESULT_ constants in this object.
    */
   remove : function(aDomain) {
     this._logger.debug("remove: " + aDomain);
 
-    let result = false;
+    let result = this.RESULT_FAIL;
 
     try {
       this._permissionManager.remove(aDomain, ALLOW_REMOTE_XUL);
-      result = true;
+      result =
+        ((this.LOCAL_FILES != aDomain) ?
+         this.RESULT_SUCCESS : this.RESULT_RESTART);
     } catch (e) {
       this._logger.error("remove\n" + e);
     }
@@ -125,6 +162,24 @@ RXULM.Permissions = {
     this._logger.trace("_getURI");
 
     return this._ioService.newURI(aDomainString, null, null);
+  },
+
+  /**
+   * Returns a connection to the permissions database.
+   * @return connection to the permissions database.
+   */
+  _getDBConnection : function() {
+    this._logger.trace("_getDBConnection");
+
+    let dirService =
+      Cc["@mozilla.org/file/directory_service;1"].getService(Ci.nsIProperties);
+    let storageService =
+      Cc["@mozilla.org/storage/service;1"].getService(Ci.mozIStorageService);
+    let dbFile = dirService.get("ProfD", Ci.nsIFile);
+
+    dbFile.append("permissions.sqlite");
+
+    return storageService.openDatabase(dbFile);
   }
 };
 

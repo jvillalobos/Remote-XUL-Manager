@@ -30,6 +30,11 @@
   <script type="application/x-javascript"
     src="chrome://remotexulmanager/content/rxmManager.js" />
 
+  <stringbundleset>
+    <stringbundle id="brand-bundle"
+      src="chrome://branding/locale/brand.properties" />
+  </stringbundleset>
+
   <label control="domains" value="&remotexulmanager.allowed.label;" />
   <listbox id="domains" rows="15" seltype="multiple"
     onselect="RXULMChrome.Manager.select(event);" />
