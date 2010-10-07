@@ -73,7 +73,7 @@ xpi_built := install.rdf \
              $(wildcard locale/*/*.dtd) \
              $(wildcard locale/*/*.properties) \
              $(wildcard modules/*.js) \
-             defaults/preferences/$(extension_name).js
+#             defaults/preferences/$(extension_name).js
 
 xpi_root := install.rdf \
             chrome.manifest \
@@ -81,7 +81,7 @@ xpi_root := install.rdf \
             skin \
             locale \
             modules \
-            defaults
+#            defaults
 
 # This builds everything except for the actual XPI, and then it copies it to the
 # specified profile directory, allowing a quick update that requires no install.

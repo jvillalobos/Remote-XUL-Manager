@@ -35,8 +35,16 @@
   </menupopup>
 
   <!-- App button menu. -->
+  <menupopup id="appmenu_webDeveloper_popup">
+    <menuitem id="rxm-app-menu" insertafter="appmenu_pageInspect"
+      label="&rxm.menu.label;" accesskey="&rxm.menu.accesskey;"
+      oncommand="RXULMChrome.BrowserOverlay.launchManager(event);" />
+  </menupopup>
+
+  <!-- XXX: this is the correct overlay to pre-beta-7 versions of Firefox 4.
+       Remove this code when beta 7 has been around for a while. -->
   <menupopup id="appmenu_developer_popup">
-    <menuitem id="rxm-app-menu" insertbefore="apmenu_pageInspect"
+    <menuitem id="rxm-app-menu" insertafter="appmenu_pageInspect"
       label="&rxm.menu.label;" accesskey="&rxm.menu.accesskey;"
       oncommand="RXULMChrome.BrowserOverlay.launchManager(event);" />
   </menupopup>

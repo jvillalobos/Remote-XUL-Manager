@@ -14,5 +14,5 @@
   - limitations under the License.
   -->
 
-<!ENTITY rxm.menu.label           "Remote XUL Manager...">
+<!ENTITY rxm.menu.label           "Remote XUL Manager">
 <!ENTITY rxm.menu.accesskey       "X">
