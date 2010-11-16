@@ -26,16 +26,23 @@ const FILE_READ_ONLY = 0x01;
 const FILE_WRITE_ONLY = 0x02;
 const FILE_CREATE = 0x08;
 const FILE_TRUNCATE = 0x20;
-const PERMISSIONS = 644;
 
 // Character used to introduce comments on export files.
 const COMMENT_CHAR = "#"
 
+Components.utils.import("resource://remotexulmanager/rxmCommon.js");
 Components.utils.import("resource://remotexulmanager/rxmPermissions.js");
 
 RXULM.Export = {
   /* Logger for this object. */
   _logger : null,
+
+  /**
+   * Gets the default file extension used for imports and exports.
+   */
+  get DEFAULT_EXTENSION() {
+    return "txt";
+  },
 
   /**
    * Initializes the object.
@@ -65,7 +72,7 @@ RXULM.Export = {
     try {
       // open the file stream.
       stream.init(
-        aFile, (FILE_WRITE_ONLY | FILE_CREATE | FILE_TRUNCATE), PERMISSIONS, 0);
+        aFile, (FILE_WRITE_ONLY | FILE_CREATE | FILE_TRUNCATE), -1, 0);
 
       // write all data.
       for (let i = 0; i < count; i++) {
@@ -108,6 +115,7 @@ RXULM.Export = {
     let line = {};
     let addResult;
     let hasMore;
+    let lineText;
     let domain;
 
     try {
@@ -119,10 +127,14 @@ RXULM.Export = {
       // read all data.
       do {
         hasMore = stream.readLine(line);
-        domain = line.value;
+        lineText = line.value;
 
         // ignore empty lines and comment lines.
-        if ((0 < domain.length) && (COMMENT_CHAR != domain[0])) {
+        if ((0 < lineText.length) && (COMMENT_CHAR != lineText[0])) {
+          // in case we need to include more data in the future, we'll use
+          // commas as separators.
+          domain = lineText.split(",")[0];
+
           if (RXULM.Permissions.LOCAL_FILES != domain) {
               addResult = RXULM.Permissions.add(domain);
 

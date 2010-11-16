@@ -34,6 +34,24 @@ RXULMChrome.Manager = {
 
   /* Logger for this object. */
   _logger : null,
+  /* Cached prompt service object. */
+  _promptService : null,
+
+  /**
+   * Lazy getter for the prompt service component.
+   * @return prompt service component.
+   */
+  get promptService() {
+    this._logger.trace("get promptService");
+
+    if (null == this._promptService) {
+      this._promptService =
+        Cc["@mozilla.org/embedcomp/prompt-service;1"].
+          getService(Ci.nsIPromptService);
+    }
+
+    return this._promptService;
+  },
 
   /**
    * Initializes the object.
@@ -99,15 +117,12 @@ RXULMChrome.Manager = {
   add : function(aEvent) {
     this._logger.debug("add");
 
-    let promptService =
-      Cc["@mozilla.org/embedcomp/prompt-service;1"].
-        getService(Ci.nsIPromptService);
     let domain = { value : "" };
     let promptResponse;
     let result;
 
     promptResponse =
-      promptService.prompt(
+      this.promptService.prompt(
         window, RXULM.stringBundle.GetStringFromName("rxm.addDomain.title"),
         RXULM.stringBundle.formatStringFromName(
           "rxm.enterDomain.label", [ RXULM.Permissions.LOCAL_FILES ], 1),
@@ -122,7 +137,7 @@ RXULMChrome.Manager = {
             document.getElementById("brand-bundle").getString("brandShortName");
 
           RXULM.Permissions.addedLocal = true;
-          promptService.alert(
+          this.promptService.alert(
             window, RXULM.stringBundle.GetStringFromName("rxm.addDomain.title"),
             RXULM.stringBundle.formatStringFromName(
               "rxm.restart.label", [ brand ], 1));
@@ -130,7 +145,7 @@ RXULMChrome.Manager = {
 
         this._loadPermissions();
       } else {
-        promptService.alert(
+        this.promptService.alert(
           window, RXULM.stringBundle.GetStringFromName("rxm.addDomain.title"),
           RXULM.stringBundle.GetStringFromName("rxm.invalidDomain.label"));
       }
@@ -167,9 +182,6 @@ RXULMChrome.Manager = {
   remove : function(aEvent) {
     this._logger.debug("remove");
 
-    let promptService =
-      Cc["@mozilla.org/embedcomp/prompt-service;1"].
-        getService(Ci.nsIPromptService);
     let selected = document.getElementById("domains").selectedItems;
     let count = selected.length;
     let message =
@@ -183,7 +195,7 @@ RXULMChrome.Manager = {
     let result;
 
     doRemove =
-      promptService.confirm(
+      this.promptService.confirm(
         window, RXULM.stringBundle.GetStringFromName("rxm.removeDomain.title"),
         message);
 
@@ -204,7 +216,7 @@ RXULMChrome.Manager = {
             document.getElementById("brand-bundle").getString("brandShortName");
 
           RXULM.Permissions.addedLocal = false;
-          promptService.alert(
+          this.promptService.alert(
             window,
             RXULM.stringBundle.GetStringFromName("rxm.removeDomain.title"),
             RXULM.stringBundle.formatStringFromName(
@@ -217,15 +229,84 @@ RXULMChrome.Manager = {
 
   /**
    * onselect event handler. Decides when to enable or disable the remove
-   * button.
+   * button and export menu.
    */
   select : function (aEvent) {
     this._logger.debug("select");
 
     let removeButton = document.getElementById("remove");
+    let exportMenu = document.getElementById("export-menuitem");
     let listbox = document.getElementById("domains");
 
     removeButton.disabled = (0 == listbox.selectedCount);
+    exportMenu.disabled = (0 == listbox.selectedCount);
+  },
+
+  /**
+   * Displays a file selection dialog to choose the file to export to. If
+   * chosen, the selected domains will be exported to that file.
+   */
+  exportDomains : function(aEvent) {
+    this._logger.debug("exportDomains");
+
+    let selected = document.getElementById("domains").selectedItems;
+    let count = selected.length;
+    let domains = [];
+    let domain;
+
+    try {
+      for (let i = 0; i < count; i ++) {
+        domain = selected[i].getAttribute("value");
+        domains.push(this._addDomainProtocol(domain));
+      }
+    } catch (e) {
+      this._logger.error("exportDomains\n" + e);
+    }
+
+    if (0 < domains.length) {
+      let success = true;
+
+      try {
+        // only import the script when necessary.
+        Components.utils.import("resource://remotexulmanager/rxmExport.js");
+
+        let fp =
+          Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
+        let winResult;
+
+        // set up the dialog.
+        fp.defaultExtension = "." + RXULM.Export.DEFAULT_EXTENSION;
+        fp.defaultString = "domains." + RXULM.Export.DEFAULT_EXTENSION;
+        fp.init(
+          window,
+          RXULM.stringBundle.GetStringFromName("rxm.exportSelected.title"),
+          Ci.nsIFilePicker.modeSave);
+        fp.appendFilters(Ci.nsIFilePicker.filterAll);
+
+        // display it.
+        winResult = fp.show();
+
+        if ((Ci.nsIFilePicker.returnOK == winResult) ||
+            (Ci.nsIFilePicker.returnReplace == winResult)) {
+          success = RXULM.Export.exportDomains(domains, fp.file);
+        }
+      } catch (e) {
+        success = false;
+        this._logger.error("exportDomains\n" + e);
+      }
+
+      // if an error happens, alert the user.
+      if (!success) {
+        this.promptService.alert(
+          window,
+          RXULM.stringBundle.GetStringFromName("rxm.exportSelected.title"),
+          RXULM.stringBundle.GetStringFromName("rxm.exportError.label"));
+      }
+    } else {
+      // how did we get here???
+      this._logger.error(
+        "exportDomains. Tried to export with no domains selected.");
+    }
   }
 };
 

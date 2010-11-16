@@ -16,6 +16,13 @@
 
 <!ENTITY remotexulmanager.manager.title       "Administrador de XUL Remoto">
 
+<!ENTITY remotexulmanager.file.label          "Archivo">
+<!ENTITY remotexulmanager.file.accesskey      "A">
+<!ENTITY remotexulmanager.import.label        "Importar...">
+<!ENTITY remotexulmanager.import.accesskey    "I">
+<!ENTITY remotexulmanager.export.label        "Exportar seleccionados...">
+<!ENTITY remotexulmanager.export.accesskey    "E">
+
 <!ENTITY remotexulmanager.allowed.label       "Dominios con permiso de XUL remoto:">
 <!ENTITY remotexulmanager.add.label           "Agregar...">
 <!ENTITY remotexulmanager.add.accesskey       "A">

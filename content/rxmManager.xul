@@ -35,6 +35,20 @@
       src="chrome://branding/locale/brand.properties" />
   </stringbundleset>
 
+  <menubar id="menu-bar">
+    <menu id="file-menu" label="&remotexulmanager.file.label;"
+      accesskey="remotexulmanager.file.accesskey">
+      <menupopup>
+        <menuitem id="import-menuitem" label="&remotexulmanager.import.label;"
+          accesskey="&remotexulmanager.import.accesskey;"
+          oncommand="RXULMChrome.Manager.importDomains(event);" />
+        <menuitem id="export-menuitem" label="&remotexulmanager.export.label;"
+          accesskey="&remotexulmanager.export.accesskey;" disabled="true"
+          oncommand="RXULMChrome.Manager.exportDomains(event);" />
+      </menupopup>
+    </menu>
+  </menubar>
+
   <label control="domains" value="&remotexulmanager.allowed.label;" />
   <listbox id="domains" rows="15" seltype="multiple"
     onselect="RXULMChrome.Manager.select(event);" />

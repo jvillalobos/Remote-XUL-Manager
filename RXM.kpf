@@ -8,4 +8,7 @@
   <boolean id="import_recursive">1</boolean>
   <string id="import_type">useFolders</string>
 </preference-set>
+<preference-set idref="11b81f5d-e6d9-044a-9613-c69a09fee3d1/locale/es/rxm.properties">
+  <string id="spellcheckLangID">en-US</string>
+</preference-set>
 </project>
