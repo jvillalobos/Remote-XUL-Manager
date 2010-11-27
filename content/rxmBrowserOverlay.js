@@ -43,7 +43,7 @@ RXULMChrome.BrowserOverlay = {
       window.openDialog(
         "chrome://remotexulmanager/content/rxmManager.xul",
         "remotexulmanager-manager-dialog",
-        "chrome,titlebar,centerscreen,dialog,resizable=no");
+        "chrome,titlebar,centerscreen,dialog,resizable");
     }
   }
 };

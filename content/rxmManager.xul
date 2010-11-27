@@ -24,7 +24,7 @@
 
 <dialog id="remotexulmanager-manager-dialog" buttons="accept"
   windowtype="remotexulmanager-manager-dialog"
-  title="&remotexulmanager.manager.title;"
+  title="&remotexulmanager.manager.title;" persist="width height"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript"
@@ -50,7 +50,7 @@
   </menubar>
 
   <label control="domains" value="&remotexulmanager.allowed.label;" />
-  <listbox id="domains" rows="15" seltype="multiple"
+  <listbox id="domains" rows="15" seltype="multiple" flex="1"
     onselect="RXULMChrome.Manager.select(event);" />
   <hbox id="button-container">
     <button id="add" label="&remotexulmanager.add.label;"

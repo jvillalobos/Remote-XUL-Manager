@@ -118,6 +118,32 @@ if ("undefined" == typeof(RXULM)) {
       this._timers.push(timer);
 
       return timer;
+    },
+
+    /**
+     * Checks if the domain doesn't have the protocol section, and adds it when
+     * necessary. This function doesn't do anything for the special "local file"
+     * identifier.
+     * @param aDomain a domain string.
+     * @return domain with protocol, like 'http://www.mozilla.com'.
+     */
+    addProtocol : function(aDomain) {
+      this._logger.debug("addProtocol");
+
+      let domain = aDomain;
+
+      if (null == RXULM.Permissions) {
+        Components.utils.import(
+          "resource://remotexulmanager/rxmPermissions.js");
+      }
+
+      if ((RXULM.Permissions.LOCAL_FILES != aDomain) &&
+          (0 != aDomain.indexOf("http://")) &&
+          (0 != aDomain.indexOf("https://"))) {
+        domain = "http://" + aDomain;
+      }
+
+      return domain;
     }
   };
 

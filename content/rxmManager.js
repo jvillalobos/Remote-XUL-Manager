@@ -129,50 +129,19 @@ RXULMChrome.Manager = {
         domain, null, { value : false });
 
     if (promptResponse) {
-      result = RXULM.Permissions.add(this._addDomainProtocol(domain.value));
+      result = RXULM.Permissions.add(RXULM.addProtocol(domain.value));
 
       if (RXULM.Permissions.RESULT_FAIL != result) {
         if (RXULM.Permissions.RESULT_RESTART == result) {
-          let brand =
-            document.getElementById("brand-bundle").getString("brandShortName");
-
           RXULM.Permissions.addedLocal = true;
-          this.promptService.alert(
-            window, RXULM.stringBundle.GetStringFromName("rxm.addDomain.title"),
-            RXULM.stringBundle.formatStringFromName(
-              "rxm.restart.label", [ brand ], 1));
+          this._showRestartPrompt("rxm.addDomain.title");
         }
 
         this._loadPermissions();
       } else {
-        this.promptService.alert(
-          window, RXULM.stringBundle.GetStringFromName("rxm.addDomain.title"),
-          RXULM.stringBundle.GetStringFromName("rxm.invalidDomain.label"));
+        this._alert("rxm.addDomain.title", "rxm.invalidDomain.label");
       }
     }
-  },
-
-  /**
-   * Checks if the domain need the protocol to be added to it, and adds it when
-   * necessary.
-   * @param aDomain the domain string entered by the user. Normally something
-   * like 'www.mozilla.com'.
-   * @return domain with protocol, like 'http://www.mozilla.com'. null if the
-   * domain is "file" (special case).
-   */
-  _addDomainProtocol : function(aDomain) {
-    this._logger.trace("_addDomainProtocol");
-
-    let domain = aDomain;
-
-    // if there's no protocol, add it.
-    if ((RXULM.Permissions.LOCAL_FILES != aDomain) &&
-        (0 != aDomain.indexOf("http://")) &&
-        (0 != aDomain.indexOf("https://"))) {
-      domain = "http://" + aDomain;
-    }
-
-    return domain;
   },
 
   /**
@@ -212,15 +181,8 @@ RXULMChrome.Manager = {
       }
 
       if (needsRestart) {
-          let brand =
-            document.getElementById("brand-bundle").getString("brandShortName");
-
           RXULM.Permissions.addedLocal = false;
-          this.promptService.alert(
-            window,
-            RXULM.stringBundle.GetStringFromName("rxm.removeDomain.title"),
-            RXULM.stringBundle.formatStringFromName(
-              "rxm.restart.label", [ brand ], 1));
+          this._showRestartPrompt("rxm.removeDomain.title");
       }
 
       this._loadPermissions();
@@ -257,7 +219,7 @@ RXULMChrome.Manager = {
     try {
       for (let i = 0; i < count; i ++) {
         domain = selected[i].getAttribute("value");
-        domains.push(this._addDomainProtocol(domain));
+        domains.push(RXULM.addProtocol(domain));
       }
     } catch (e) {
       this._logger.error("exportDomains\n" + e);
@@ -297,16 +259,120 @@ RXULMChrome.Manager = {
 
       // if an error happens, alert the user.
       if (!success) {
-        this.promptService.alert(
-          window,
-          RXULM.stringBundle.GetStringFromName("rxm.exportSelected.title"),
-          RXULM.stringBundle.GetStringFromName("rxm.exportError.label"));
+        this._alert("rxm.exportSelected.title", "rxm.exportError.label");
       }
     } else {
       // how did we get here???
       this._logger.error(
         "exportDomains. Tried to export with no domains selected.");
     }
+  },
+
+  /**
+   * Displays a file selection dialog to choose the file to import from. If
+   * chosen, the domains will be imported from that file.
+   */
+  importDomains : function(aEvent) {
+    this._logger.debug("importDomains");
+
+    let success = true;
+
+    try {
+      // only import the script when necessary.
+      Components.utils.import("resource://remotexulmanager/rxmExport.js");
+
+      let fp =
+        Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
+      let winResult;
+
+      // set up the dialog.
+      fp.defaultExtension = "." + RXULM.Export.DEFAULT_EXTENSION;
+      fp.init(
+        window,
+        RXULM.stringBundle.GetStringFromName("rxm.import.title"),
+        Ci.nsIFilePicker.modeOpen);
+      fp.appendFilters(Ci.nsIFilePicker.filterAll);
+
+      // display it.
+      winResult = fp.show();
+
+      if ((Ci.nsIFilePicker.returnOK == winResult) ||
+          (Ci.nsIFilePicker.returnReplace == winResult)) {
+        let result = RXULM.Export.importDomains(fp.file);
+
+        if (RXULM.Permissions.RESULT_FAIL != result.result) {
+          let importCount = result.domains.length;
+          let failCount = result.invalids.length;
+          let message =
+            ((1 == importCount) ?
+             RXULM.stringBundle.GetStringFromName(
+              "rxm.import.importedOne.label") :
+             RXULM.stringBundle.formatStringFromName(
+              "rxm.import.importedMany.label", [ importCount ], 1));
+
+          if (0 < failCount) {
+            message += "\n";
+            message +=
+              ((1 == failCount) ?
+               RXULM.stringBundle.GetStringFromName(
+                "rxm.import.invalidOne.label") :
+               RXULM.stringBundle.formatStringFromName(
+                "rxm.import.invalidMany.label", [ failCount ], 1));
+          }
+
+          this.promptService.alert(
+            window, RXULM.stringBundle.GetStringFromName("rxm.import.title"),
+            message);
+
+          // show another message if we need to restart.
+          if (RXULM.Permissions.RESULT_RESTART == result.result) {
+            RXULM.Permissions.addedLocal = true;
+            this._showRestartPrompt("rxm.import.title");
+          }
+        } else {
+          success = false;
+        }
+      }
+
+      this._loadPermissions();
+    } catch (e) {
+      success = false;
+      this._logger.error("importDomains\n" + e);
+    }
+
+    if (!success) {
+      this._alert("rxm.import.title", "rxm.importError.label");
+    }
+  },
+
+  /**
+   * Shows a prompt telling the user he must restart the browser before
+   * performing any more changes to the list.
+   * @param aTitleKey the key to the string that is used for the title.
+   */
+  _showRestartPrompt : function(aTitleKey) {
+    this._logger.trace("_showRestartPrompt");
+
+    let brand =
+      document.getElementById("brand-bundle").getString("brandShortName");
+
+    this.promptService.alert(
+      window, RXULM.stringBundle.GetStringFromName(aTitleKey),
+      RXULM.stringBundle.formatStringFromName(
+        "rxm.restart.label", [ brand ], 1));
+  },
+
+  /**
+   * Shows a basic alert prompt with a title and content.
+   * @param aTitleKey the key to the string that is used for the title.
+   * @param aContentKey the key to the string that is used for the coontent.
+   */
+  _alert : function(aTitleKey, aContentKey) {
+    this._logger.trace("_alert");
+
+    this.promptService.alert(
+      window, RXULM.stringBundle.GetStringFromName(aTitleKey),
+      RXULM.stringBundle.GetStringFromName(aContentKey));
   }
 };
 

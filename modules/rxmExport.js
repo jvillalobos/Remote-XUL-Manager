@@ -136,7 +136,7 @@ RXULM.Export = {
           domain = lineText.split(",")[0];
 
           if (RXULM.Permissions.LOCAL_FILES != domain) {
-              addResult = RXULM.Permissions.add(domain);
+              addResult = RXULM.Permissions.add(RXULM.addProtocol(domain));
 
               // insert into the right array once we've tried to add it.
               if (RXULM.Permissions.RESULT_SUCCESS == addResult) {
@@ -159,13 +159,13 @@ RXULM.Export = {
       } else {
         result.result = RXULM.Permissions.RESULT_SUCCESS;
       }
-
-      // close the stream.
-      stream.close();
-      stream = null;
     } catch (e) {
       this._logger.error("importDomains\n" + e);
     }
+
+    // close the stream.
+    stream.close();
+    stream = null;
 
     return result;
   }
