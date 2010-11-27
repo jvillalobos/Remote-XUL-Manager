@@ -20,9 +20,9 @@
 <?xml-stylesheet type="text/css"
   href="chrome://remotexulmanager/skin/rxmManager.css" ?>
 
-<!DOCTYPE dialog SYSTEM "chrome://remotexulmanager/locale/rxmManager.dtd">
+<!DOCTYPE window SYSTEM "chrome://remotexulmanager/locale/rxmManager.dtd">
 
-<dialog id="remotexulmanager-manager-dialog" buttons="accept"
+<window id="remotexulmanager-manager-dialog"
   windowtype="remotexulmanager-manager-dialog"
   title="&remotexulmanager.manager.title;" persist="width height"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -35,31 +35,48 @@
       src="chrome://branding/locale/brand.properties" />
   </stringbundleset>
 
-  <menubar id="menu-bar">
-    <menu id="file-menu" label="&remotexulmanager.file.label;"
-      accesskey="remotexulmanager.file.accesskey">
-      <menupopup>
-        <menuitem id="import-menuitem" label="&remotexulmanager.import.label;"
-          accesskey="&remotexulmanager.import.accesskey;"
-          oncommand="RXULMChrome.Manager.importDomains(event);" />
-        <menuitem id="export-menuitem" label="&remotexulmanager.export.label;"
-          accesskey="&remotexulmanager.export.accesskey;" disabled="true"
-          oncommand="RXULMChrome.Manager.exportDomains(event);" />
-      </menupopup>
-    </menu>
-  </menubar>
+  <commandset>
+    <command id="close-command" oncommand="window.close();" />
+  </commandset>
 
-  <label control="domains" value="&remotexulmanager.allowed.label;" />
-  <listbox id="domains" rows="15" seltype="multiple" flex="1"
-    onselect="RXULMChrome.Manager.select(event);" />
-  <hbox id="button-container">
-    <button id="add" label="&remotexulmanager.add.label;"
-      accesskey="&remotexulmanager.add.accesskey;"
-      oncommand="RXULMChrome.Manager.add(event);" />
-    <spacer flex="1" />
-    <button id="remove" disabled="true" label="&remotexulmanager.remove.label;"
-      accesskey="&remotexulmanager.remove.accesskey;"
-      oncommand="RXULMChrome.Manager.remove(event);" />
-  </hbox>
+  <keyset>
+    <key id="close-key" key="W" modifiers="accel" command="close-command" />
+  </keyset>
 
-</dialog>
+  <toolbox id="tool-box">
+    <menubar id="menu-bar">
+      <menu id="file-menu" label="&remotexulmanager.file.label;"
+        accesskey="&remotexulmanager.file.accesskey;">
+        <menupopup>
+          <menuitem id="import-menuitem" label="&remotexulmanager.import.label;"
+            accesskey="&remotexulmanager.import.accesskey;"
+            oncommand="RXULMChrome.Manager.importDomains(event);" />
+          <menuitem id="export-menuitem" label="&remotexulmanager.export.label;"
+            accesskey="&remotexulmanager.export.accesskey;" disabled="true"
+            oncommand="RXULMChrome.Manager.exportDomains(event);" />
+          <menuseparator />
+          <menuitem id="close-menuitem" command="close-command" key="close-key"
+            label="&remotexulmanager.close.label;"
+            accesskey="&remotexulmanager.close.accesskey;" />
+        </menupopup>
+      </menu>
+    </menubar>
+  </toolbox>
+
+  <vbox id="window-content" flex="1">
+    <label control="domains" value="&remotexulmanager.allowed.label;" />
+    <listbox id="domains" rows="15" seltype="multiple" flex="1"
+      onselect="RXULMChrome.Manager.select(event);" />
+    <hbox id="button-container">
+      <button id="add" label="&remotexulmanager.add.label;"
+        accesskey="&remotexulmanager.add.accesskey;"
+        oncommand="RXULMChrome.Manager.add(event);" />
+      <spacer flex="1" />
+      <button id="remove" disabled="true"
+        label="&remotexulmanager.remove.label;"
+        accesskey="&remotexulmanager.remove.accesskey;"
+        oncommand="RXULMChrome.Manager.remove(event);" />
+    </hbox>
+  </vbox>
+
+</window>

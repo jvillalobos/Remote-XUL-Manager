@@ -17,3 +17,7 @@
 #domains {
   height: 16em;
 }
+
+#window-content {
+  padding: 1em;
+}

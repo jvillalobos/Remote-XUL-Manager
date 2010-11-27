@@ -22,6 +22,8 @@
 <!ENTITY remotexulmanager.import.accesskey    "I">
 <!ENTITY remotexulmanager.export.label        "Exportar seleccionados...">
 <!ENTITY remotexulmanager.export.accesskey    "E">
+<!ENTITY remotexulmanager.close.label         "Cerrar">
+<!ENTITY remotexulmanager.close.accesskey     "C">
 
 <!ENTITY remotexulmanager.allowed.label       "Dominios con permiso de XUL remoto:">
 <!ENTITY remotexulmanager.add.label           "Agregar...">
