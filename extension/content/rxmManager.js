@@ -365,7 +365,7 @@ RXULMChrome.Manager = {
   /**
    * Shows a basic alert prompt with a title and content.
    * @param aTitleKey the key to the string that is used for the title.
-   * @param aContentKey the key to the string that is used for the coontent.
+   * @param aContentKey the key to the string that is used for the content.
    */
   _alert : function(aTitleKey, aContentKey) {
     this._logger.trace("_alert");
