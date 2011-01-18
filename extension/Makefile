@@ -23,6 +23,9 @@ extension_uuid := remotexulmanager@xulforge.com
 # The name of the profile dir where the extension can be installed.
 profile_dir := remotexulmanager-dev
 
+# The directory where the template files are located (soft link).
+templates_dir := content/templates
+
 # The zip application to be used.
 ZIP := zip
 
@@ -59,6 +62,10 @@ clean:
 	@rm -f $(xpi_file)
 	@echo "Cleanup is done."
 
+# Template files from the installer project.
+template_files := $(templates_dir)/install.rdf \
+                  $(templates_dir)/bootstrap.js
+
 # The sources for the XPI file. Uses variables defined in the included
 # Makefiles.
 xpi_built := install.rdf \
@@ -73,6 +80,7 @@ xpi_built := install.rdf \
              $(wildcard locale/*/*.dtd) \
              $(wildcard locale/*/*.properties) \
              $(wildcard modules/*.js) \
+             $(template_files) \
 #             defaults/preferences/$(extension_name).js
 
 xpi_root := install.rdf \
