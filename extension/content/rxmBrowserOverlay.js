@@ -28,6 +28,7 @@ RXULMChrome.BrowserOverlay = {
 
   /**
    * Opens the Remote XUL Manager dialog.
+   * @param aEvent the event that triggered this action.
    */
   launchManager : function(aEvent) {
     let windowManager =

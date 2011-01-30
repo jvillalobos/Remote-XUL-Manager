@@ -55,6 +55,11 @@
             accesskey="&remotexulmanager.export.accesskey;" disabled="true"
             oncommand="RXULMChrome.Manager.exportDomains(event);" />
           <menuseparator />
+          <menuitem id="generate-menuitem"
+            label="&remotexulmanager.generate.label;"
+            accesskey="&remotexulmanager.generate.accesskey;"
+            oncommand="RXULMChrome.Manager.launchGenerator(event);" />
+          <menuseparator />
           <menuitem id="close-menuitem" command="close-command" key="close-key"
             label="&remotexulmanager.close.label;"
             accesskey="&remotexulmanager.close.accesskey;" />

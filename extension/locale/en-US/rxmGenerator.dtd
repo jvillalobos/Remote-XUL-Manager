@@ -1,0 +1,32 @@
+<!--
+  - Copyright 2011 Jorge Villalobos
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -    http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -->
+
+<!ENTITY remotexulmanager.generator.title       "Installer Generator">
+
+<!ENTITY remotexulmanager.generatorIntro.label  "This tool creates an add-on that modifies the Remote XUL whitelist with minimal user intervention.">
+<!ENTITY remotexulmanager.selectDomains.label   "Domains in the installer whitelist">
+
+<!ENTITY remotexulmanager.labelsIntro.label     "The following fields are all optional. If left blank, the installer uses the default messages included, in English only.">
+
+<!ENTITY remotexulmanager.title.label           "Title">
+<!ENTITY remotexulmanager.titleLong.label       "The title that will appear in all dialogs the add-on shows.">
+<!ENTITY remotexulmanager.warning.label         "Warning message">
+<!ENTITY remotexulmanager.warningLong.label     "The warning message that tells users about the security implications of Remote XUL usage.">
+<!ENTITY remotexulmanager.restart.label         "Restart message">
+<!ENTITY remotexulmanager.restartLong.label     "A message that tells users that the application needs to restart. This only appears when local files are added to the whitelist.">
+
+<!ENTITY remotexulmanager.generate.label        "Generate">
+<!ENTITY remotexulmanager.generate.accesskey    "G">

@@ -96,7 +96,7 @@ xpi_root := install.rdf \
 .PHONY: install
 install: $(xpi_built) $(xpi_root)
 	@echo "Installing in profile folder: $(profile_location)"
-	@cp -Rf $(xpi_root) $(profile_location)
+	@cp -RfL $(xpi_root) $(profile_location)
 	@echo "Installing in profile folder. Done!"
 	@echo
 

@@ -192,6 +192,7 @@ RXULMChrome.Manager = {
   /**
    * onselect event handler. Decides when to enable or disable the remove
    * button and export menu.
+   * @param aEvent the event that triggered this action.
    */
   select : function (aEvent) {
     this._logger.debug("select");
@@ -342,6 +343,30 @@ RXULMChrome.Manager = {
 
     if (!success) {
       this._alert("rxm.import.title", "rxm.importError.label");
+    }
+  },
+
+  /**
+   * Opens the Installer generator dialog.
+   * @param aEvent the event that triggered this action.
+   */
+  launchGenerator : function(aEvent) {
+    this._logger.debug("launchGenerator");
+
+    let windowManager =
+      Cc['@mozilla.org/appshell/window-mediator;1'].
+        getService(Ci.nsIWindowMediator);
+    let win =
+      windowManager.getMostRecentWindow("remotexulmanager-generator-dialog");
+
+    // check if a window is already open.
+    if ((null != win) && !win.closed) {
+      win.focus();
+    } else {
+      window.openDialog(
+        "chrome://remotexulmanager/content/rxmGenerator.xul",
+        "remotexulmanager-generator-dialog",
+        "chrome,titlebar,centerscreen,dialog,resizable");
     }
   },
 

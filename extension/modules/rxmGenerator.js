@@ -6,7 +6,7 @@
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
-
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,11 +21,9 @@ const Ci = Components.interfaces;
 
 // Stream creation flags. See
 // https://developer.mozilla.org/en/PR_Open#Parameters
-const FILE_READ_ONLY = 0x01;
 const FILE_WRITE_ONLY = 0x02;
 const FILE_CREATE = 0x08;
 const FILE_TRUNCATE = 0x20;
-
 
 // The location of the template files.
 const TEMPLATES_URL = "chrome://remotexulmanager/content/templates/";
@@ -118,45 +116,32 @@ RXULM.Generator = {
     aFileName, aDomains, aTitle, aWarning, aRestartMsg) {
     this._logger.trace("_getInstallFile");
 
-    let installFile = RXULM.getRXMDirectory();
-    let contents;
-
-    // set up install file and get template contents.
-    installFile.append(aFileName);
-    contents = this._getUrlContents(TEMPLATES_URL + aFileName);
+    let contents = this._getUrlContents(TEMPLATES_URL + aFileName);
 
     // replace all parameters in the template.
     contents = contents.replace(/$\(ID\)/g, this._generatedId);
-    contents =
-      contents.replace(/$\(DOMAINS\)/g, this._getDomainsString(aDomains));
+    contents = contents.replace(/$\(DOMAINS\)/g, aDomains.toString());
 
     if (("string" == typeof(aTitle)) && (0 < aTitle.length)) {
       contents = contents.replace(/$\(TITLE\)/g, aTitle);
+    } else {
+      contents = contents.replace(/$\(TITLE\)/g, "");
     }
 
     if (("string" == typeof(aTitle)) && (0 < aTitle.length)) {
       contents = contents.replace(/$\(WARNING\)/g, aWarning);
+    } else {
+      contents = contents.replace(/$\(WARNING\)/g, "");
     }
 
     if (("string" == typeof(aTitle)) && (0 < aTitle.length)) {
       contents = contents.replace(/$\(NEED_RESTART\)/g, aRestartMsg);
+    } else {
+      contents = contents.replace(/$\(NEED_RESTART\)/g, "");
     }
 
-    // TODO: write file.
+    return this._writeFile(aFileName, contents);
   },
-
-  /**
-   * Converts the domain list to a string format to use for the templates. It's
-   * basically a JS array converted to a string without the enclosing brackets.
-   * @param aDomains the domain list.
-   * @return the resulting domains string.
-   */
-  _getDomainsString : function (aDomains) {
-    this._logger.trace("_getDomainsString");
-
-    // TODO: do!
-  },
-
 
   /**
    * Gets the contents of the file that corresponds to the given URL.
@@ -195,45 +180,36 @@ RXULM.Generator = {
     return result;
   },
 
-
-
   /**
-   * Exports the list of given domains to the selected file. All existing data
-   * in the file will be deleted.
-   * @param aDomains array of domains to export.
-   * @param aFile the file to export the domains to.
-   * @return true if the operation was successful, false otherwise.
+   * Writes the given string contents to a file with the corresponding file
+   * name, in the profile directory.
+   * @param aFileName the name of the file to write.
+   * @param aContents the intended contents of the file.
+   * @return nsIFile pointing to the written file.
    */
-  exportDomains : function(aDomains, aFile) {
-    this._logger.debug("exportDomains");
+  _writeFile : function(aFileName, aContents) {
+    this._logger.trace("_writeFile");
 
     let stream =
       Cc["@mozilla.org/network/file-output-stream;1"].
         createInstance(Ci.nsIFileOutputStream);
-    let count = aDomains.length;
-    let result = false;
-    let line;
+    let installFile = RXULM.getRXMDirectory();
+
+    installFile.append(aFileName);
 
     try {
-      // open the file stream.
       stream.init(
-        aFile, (FILE_WRITE_ONLY | FILE_CREATE | FILE_TRUNCATE), -1, 0);
-
-      // write all data.
-      for (let i = 0; i < count; i++) {
-        line = aDomains[i] + "\n";
-        stream.write(line, line.length);
-      }
-
-      // close the stream.
+        installFile, (FILE_WRITE_ONLY | FILE_CREATE | FILE_TRUNCATE), -1, 0);
+      stream.write(aContents, aContents.length);
       stream.close();
       stream = null;
-      result = true;
     } catch (e) {
-      this._logger.error("exportDomains\n" + e);
+      this._logger.error(
+        "_writeFile. Error writing file " + aFileName + "\n" + e);
+      throw e;
     }
 
-    return result;
+    return installFile;
   }
 };
 

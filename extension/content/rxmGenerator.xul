@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+
+<!--
+  - Copyright 2011 Jorge Villalobos
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -    http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -->
+
+<?xml-stylesheet type="text/css" href="chrome://global/skin/" ?>
+<?xml-stylesheet type="text/css"
+  href="chrome://remotexulmanager/skin/rxmManager.css" ?>
+
+<!DOCTYPE window SYSTEM "chrome://remotexulmanager/locale/rxmGenerator.dtd">
+
+<window id="remotexulmanager-generator-dialog"
+  windowtype="remotexulmanager-generator-dialog"
+  title="&remotexulmanager.generator.title;" persist="width height"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <script type="application/x-javascript"
+    src="chrome://remotexulmanager/content/rxmGenerator.js" />
+
+  <commandset>
+    <command id="close-command" oncommand="window.close();" />
+  </commandset>
+
+  <keyset>
+    <key id="close-key" key="W" modifiers="accel" command="close-command" />
+  </keyset>
+
+  <vbox id="window-content" flex="1">
+    <description id="intro">
+      &remotexulmanager.generatorIntro.label;
+    </description>
+    <label control="domains" value="&remotexulmanager.selectDomains.label;" />
+    <listbox id="domains" rows="15" seltype="multiple" flex="1"
+      onselect="RXULMChrome.Generator.select(event);" />
+    <description id="labels-intro">
+      &remotexulmanager.labelsIntro.label;
+    </description>
+    <grid id="generate-grid">
+      <columns>
+        <column />
+        <column flex="1" />
+      </columns>
+      <rows>
+        <row>
+          <label control="title" value="&remotexulmanager.title.label;" />
+          <textbox id="title" flex="1" />
+        </row>
+        <row>
+          <hbox />
+          <description>&remotexulmanager.titleLong.label;</description>
+        </row>
+        <row>
+          <label control="warning" value="&remotexulmanager.warning.label;" />
+          <textbox id="warning" flex="1" />
+        </row>
+        <row>
+          <hbox />
+          <description>&remotexulmanager.warningLong.label;</description>
+        </row>
+        <row>
+          <label control="restart" value="&remotexulmanager.restart.label;" />
+          <textbox id="restart" flex="1" />
+        </row>
+        <row>
+          <hbox />
+          <description>&remotexulmanager.restartLong.label;</description>
+        </row>
+      </rows>
+    </grid>
+    <hbox id="generate-box">
+      <button id="generate" disabled="true"
+        label="&remotexulmanager.generate.label;"
+        accesskey="&remotexulmanager.generate.accesskey;"
+        oncommand="RXULMChrome.Generator.generateInstaller(event);" />
+    </hbox>
+  </vbox>
+</window>
