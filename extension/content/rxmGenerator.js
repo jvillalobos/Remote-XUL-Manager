@@ -17,6 +17,8 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+const INSTALLER_EXTENSION = "xpi";
+
 Components.utils.import("resource://remotexulmanager/rxmCommon.js");
 Components.utils.import("resource://remotexulmanager/rxmGenerator.js");
 
@@ -86,6 +88,76 @@ RXULMChrome.Generator = {
     let listbox = document.getElementById("domains");
 
     document.getElementById("generate").disabled = (0 == listbox.selectedCount);
+  },
+
+  /**
+   * Opens the file dialog that allows the user to choose where to save the
+   * generated file. Once selected, it generates the file.
+   * @param aEvent the event that triggered this action.
+   */
+  generateInstaller : function(aEvent) {
+    this._logger.debug("generateInstaller");
+
+    let selected = document.getElementById("domains").selectedItems;
+    let count = selected.length;
+    let domains = [];
+
+    try {
+      for (let i = 0; i < count; i ++) {
+        domains.push(selected[i].getAttribute("value"));
+      }
+    } catch (e) {
+      this._logger.error("generateInstaller\n" + e);
+    }
+
+    if (0 < domains.length) {
+      try {
+        // only import the script when necessary.
+        Components.utils.import("resource://remotexulmanager/rxmGenerator.js");
+
+        let fp =
+          Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
+        let winResult;
+
+        // set up the dialog.
+        fp.defaultExtension = "." + INSTALLER_EXTENSION;
+        fp.defaultString = "rxm-installer." + INSTALLER_EXTENSION;
+        fp.init(
+          window,
+          RXULM.stringBundle.GetStringFromName("rxm.generateInstaller.title"),
+          Ci.nsIFilePicker.modeSave);
+        fp.appendFilters(Ci.nsIFilePicker.filterAll);
+
+        // display it.
+        winResult = fp.show();
+
+        if ((Ci.nsIFilePicker.returnOK == winResult) ||
+            (Ci.nsIFilePicker.returnReplace == winResult)) {
+          RXULM.Generator.generateInstaller(
+            fp.file, domains, document.getElementById("title").value,
+            document.getElementById("warning").value,
+            document.getElementById("restart").value);
+          RXULM.runWithDelay(function() { window.close(); }, 0);
+        }
+      } catch (e) {
+        this._logger.error("generateInstaller\n" + e);
+
+        // if an error happens, alert the user.
+        let promptService =
+          Cc["@mozilla.org/embedcomp/prompt-service;1"].
+            getService(Ci.nsIPromptService);
+
+        promptService.alert(
+          window,
+          RXULM.stringBundle.GetStringFromName("rxm.generateInstaller.title"),
+          RXULM.stringBundle.GetStringFromName("rxm.generateError.label"));
+      }
+    } else {
+      // how did we get here???
+      this._logger.error(
+        "generateInstaller. Tried to generate installer with no domains " +
+        "selected.");
+    }
   }
 };
 

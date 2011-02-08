@@ -24,7 +24,7 @@
     <em:name>Remote XUL Installer (generated - $(ID))</em:name>
     <em:description>Automatically installs a set of domains to the Remote XUL whitelist.</em:description>
     <em:version>1.0</em:version>
-    <em:creator>Jorge Villalobos (original)</em:creator>
+    <em:creator>Remore XUL Manager Generator</em:creator>
     <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
     <em:bootstrap>true</em:bootstrap>
     <em:type>2</em:type>

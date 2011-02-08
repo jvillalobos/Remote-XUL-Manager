@@ -64,9 +64,13 @@ RXULM.Generator = {
     let bootFile;
 
     // prepare the contents of the package.
-    this._generatedId();
-    rdfFile = this._getInstallFile("install.rdf");
-    bootFile = this._getInstallFile("bootstrap.js");
+    this._generateId();
+    rdfFile =
+      this._getInstallFile(
+        "install.rdf", aDomains, aTitle, aWarning, aRestartMsg);
+    bootFile =
+      this._getInstallFile(
+        "bootstrap.js", aDomains, aTitle, aWarning, aRestartMsg);
 
     try {
       // write the package.
@@ -80,11 +84,11 @@ RXULM.Generator = {
     } finally {
       // clean up temporary files.
       if ((null != rdfFile) && rdfFile.exists()) {
-        rdfFile.remove();
+        rdfFile.remove(false);
       }
 
       if ((null != bootFile) && bootFile.exists()) {
-        bootFile.remove();
+        bootFile.remove(false);
       }
     }
   },
@@ -97,8 +101,9 @@ RXULM.Generator = {
 
     let idGenerator =
       Cc["@mozilla.org/uuid-generator;1"].getService(Ci.nsIUUIDGenerator);
+    let generated = idGenerator.generateUUID().toString();
 
-    this._generatedId = idGenerator.generateUUID();
+    this._generatedId = generated.replace(/{|}/g, "");
   },
 
   /**
@@ -119,25 +124,26 @@ RXULM.Generator = {
     let contents = this._getUrlContents(TEMPLATES_URL + aFileName);
 
     // replace all parameters in the template.
-    contents = contents.replace(/$\(ID\)/g, this._generatedId);
-    contents = contents.replace(/$\(DOMAINS\)/g, aDomains.toString());
+    contents = contents.replace(/\$\(ID\)/g, this._generatedId);
+    contents =
+      contents.replace(/\$\(DOMAINS\)/g, this._domainArrayToString(aDomains));
 
     if (("string" == typeof(aTitle)) && (0 < aTitle.length)) {
-      contents = contents.replace(/$\(TITLE\)/g, aTitle);
+      contents = contents.replace(/\$\(TITLE\)/g, aTitle);
     } else {
-      contents = contents.replace(/$\(TITLE\)/g, "");
+      contents = contents.replace(/\$\(TITLE\)/g, "");
     }
 
     if (("string" == typeof(aTitle)) && (0 < aTitle.length)) {
-      contents = contents.replace(/$\(WARNING\)/g, aWarning);
+      contents = contents.replace(/\$\(WARNING\)/g, aWarning);
     } else {
-      contents = contents.replace(/$\(WARNING\)/g, "");
+      contents = contents.replace(/\$\(WARNING\)/g, "");
     }
 
     if (("string" == typeof(aTitle)) && (0 < aTitle.length)) {
-      contents = contents.replace(/$\(NEED_RESTART\)/g, aRestartMsg);
+      contents = contents.replace(/\$\(NEED_RESTART\)/g, aRestartMsg);
     } else {
-      contents = contents.replace(/$\(NEED_RESTART\)/g, "");
+      contents = contents.replace(/\$\(NEED_RESTART\)/g, "");
     }
 
     return this._writeFile(aFileName, contents);
@@ -178,6 +184,28 @@ RXULM.Generator = {
     }
 
     return result;
+  },
+
+  /**
+   * Converts the domains array into a string to be used in the installer files.
+   * @param aDomains the array of domains to include.
+   * @return string that represents the domain array.
+   */
+  _domainArrayToString : function(aDomains) {
+    this._logger.trace("_domainArrayToString");
+
+    let domainString = "";
+    let domainCount = aDomains.length;
+
+    for (let i = 0; i < domainCount; i++) {
+      if (0 != i) {
+        domainString += ",";
+      }
+
+      domainString += "\"" + aDomains[i] + "\"";
+    }
+
+    return domainString;
   },
 
   /**

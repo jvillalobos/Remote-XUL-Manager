@@ -27,5 +27,15 @@
 }
 
 #generate-box {
-  -mox-box-pack: center;
+  -moz-box-pack: center;
+}
+
+#remotexulmanager-generator-dialog label,
+#remotexulmanager-generator-dialog description {
+  margin-left: 6px;
+}
+
+#intro,
+#labels-intro {
+  margin-bottom: 1em;
 }

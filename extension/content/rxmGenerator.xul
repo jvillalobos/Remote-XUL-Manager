@@ -45,41 +45,43 @@
     <label control="domains" value="&remotexulmanager.selectDomains.label;" />
     <listbox id="domains" rows="15" seltype="multiple" flex="1"
       onselect="RXULMChrome.Generator.select(event);" />
-    <description id="labels-intro">
-      &remotexulmanager.labelsIntro.label;
-    </description>
-    <grid id="generate-grid">
-      <columns>
-        <column />
-        <column flex="1" />
-      </columns>
-      <rows>
-        <row>
-          <label control="title" value="&remotexulmanager.title.label;" />
-          <textbox id="title" flex="1" />
-        </row>
-        <row>
-          <hbox />
-          <description>&remotexulmanager.titleLong.label;</description>
-        </row>
-        <row>
-          <label control="warning" value="&remotexulmanager.warning.label;" />
-          <textbox id="warning" flex="1" />
-        </row>
-        <row>
-          <hbox />
-          <description>&remotexulmanager.warningLong.label;</description>
-        </row>
-        <row>
-          <label control="restart" value="&remotexulmanager.restart.label;" />
-          <textbox id="restart" flex="1" />
-        </row>
-        <row>
-          <hbox />
-          <description>&remotexulmanager.restartLong.label;</description>
-        </row>
-      </rows>
-    </grid>
+    <groupbox>
+      <description id="labels-intro">
+        &remotexulmanager.labelsIntro.label;
+      </description>
+      <grid id="generate-grid">
+        <columns>
+          <column />
+          <column flex="1" />
+        </columns>
+        <rows>
+          <row>
+            <label control="title" value="&remotexulmanager.title.label;" />
+            <textbox id="title" flex="1" />
+          </row>
+          <row>
+            <hbox />
+            <description>&remotexulmanager.titleLong.label;</description>
+          </row>
+          <row>
+            <label control="warning" value="&remotexulmanager.warning.label;" />
+            <textbox id="warning" flex="1" />
+          </row>
+          <row>
+            <hbox />
+            <description>&remotexulmanager.warningLong.label;</description>
+          </row>
+          <row>
+            <label control="restart" value="&remotexulmanager.restart.label;" />
+            <textbox id="restart" flex="1" />
+          </row>
+          <row>
+            <hbox />
+            <description>&remotexulmanager.restartLong.label;</description>
+          </row>
+        </rows>
+      </grid>
+    </groupbox>
     <hbox id="generate-box">
       <button id="generate" disabled="true"
         label="&remotexulmanager.generate.label;"
