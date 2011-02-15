@@ -61,23 +61,37 @@
           </row>
           <row>
             <hbox />
-            <description>&remotexulmanager.titleLong.label;</description>
+            <vbox>
+              <label class="default-text"
+                value="&remotexulmanager.default.label;" />
+              <description>Remote XUL Manager</description>
+            </vbox>
           </row>
           <row>
             <label control="warning" value="&remotexulmanager.warning.label;" />
-            <textbox id="warning" flex="1" />
+            <textbox id="warning" multiline="true" rows="4" flex="1" />
           </row>
           <row>
             <hbox />
-            <description>&remotexulmanager.warningLong.label;</description>
+            <vbox>
+              <label class="default-text"
+                value="&remotexulmanager.default.label;" />
+              <description>The following list of domains will be added to your remote XUL whitelist. Select OK to accept.\nWARNING: Remote XUL is considered insecure and should only be enabled when necessary.
+              </description>
+            </vbox>
           </row>
           <row>
             <label control="restart" value="&remotexulmanager.restart.label;" />
-            <textbox id="restart" flex="1" />
+            <textbox id="restart" multiline="true" rows="2" flex="1" />
           </row>
           <row>
             <hbox />
-            <description>&remotexulmanager.restartLong.label;</description>
+            <vbox>
+              <label class="default-text"
+                value="&remotexulmanager.default.label;" />
+              <description>You need to restart this program for all changes to apply.
+              </description>
+            </vbox>
           </row>
         </rows>
       </grid>

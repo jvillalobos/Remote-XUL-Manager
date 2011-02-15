@@ -41,8 +41,8 @@ var RXULMInstaller = {
   // Installation warning and optional, localized version of the message.
   WARNING :
     "The following list of domains will be added to your remote XUL " +
-    "whitelist. Select OK to accept.\n*WARNING*: Remote XUL is considered to " +
-    "be insecure and should only be enabled when necessary.",
+    "whitelist. Select OK to accept.\nWARNING: Remote XUL is considered " +
+    "insecure and should only be enabled when necessary.",
   WARNING_LOCALIZED : "$(WARNING)",
   // Browser restart message and optional, localized version of the message.
   NEED_RESTART :

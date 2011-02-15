@@ -134,13 +134,13 @@ RXULM.Generator = {
       contents = contents.replace(/\$\(TITLE\)/g, "");
     }
 
-    if (("string" == typeof(aTitle)) && (0 < aTitle.length)) {
+    if (("string" == typeof(aWarning)) && (0 < aWarning.length)) {
       contents = contents.replace(/\$\(WARNING\)/g, aWarning);
     } else {
       contents = contents.replace(/\$\(WARNING\)/g, "");
     }
 
-    if (("string" == typeof(aTitle)) && (0 < aTitle.length)) {
+    if (("string" == typeof(aRestartMsg)) && (0 < aRestartMsg.length)) {
       contents = contents.replace(/\$\(NEED_RESTART\)/g, aRestartMsg);
     } else {
       contents = contents.replace(/\$\(NEED_RESTART\)/g, "");

@@ -134,9 +134,9 @@ RXULMChrome.Generator = {
         if ((Ci.nsIFilePicker.returnOK == winResult) ||
             (Ci.nsIFilePicker.returnReplace == winResult)) {
           RXULM.Generator.generateInstaller(
-            fp.file, domains, document.getElementById("title").value,
-            document.getElementById("warning").value,
-            document.getElementById("restart").value);
+            fp.file, domains, document.getElementById("title").value.trim(),
+            document.getElementById("warning").value.trim(),
+            document.getElementById("restart").value.trim());
           RXULM.runWithDelay(function() { window.close(); }, 0);
         }
       } catch (e) {

@@ -39,3 +39,7 @@
 #labels-intro {
   margin-bottom: 1em;
 }
+
+.default-text {
+  font-weight: bold;
+}

@@ -21,12 +21,10 @@
 
 <!ENTITY remotexulmanager.labelsIntro.label     "Los siguientes campos son opcionales. Si se dejan en blanco, el instalador utiliza los mensajes por defecto, en inglés.">
 
+<!ENTITY remotexulmanager.default.label         "Texto por defecto:">
 <!ENTITY remotexulmanager.title.label           "Título">
-<!ENTITY remotexulmanager.titleLong.label       "Aparece en todos los diálogos que el complemento muestra.">
 <!ENTITY remotexulmanager.warning.label         "Mensaje de advertencia">
-<!ENTITY remotexulmanager.warningLong.label     "Indica a los usuarios las implicaciones de seguridad del XUL remoto.">
 <!ENTITY remotexulmanager.restart.label         "Mensaje de reinicio">
-<!ENTITY remotexulmanager.restartLong.label     "Indica a los usuarios que la aplicación debe reiniciar. Solo aparece cuando se agregar archivos locales a la lista.">
 
 <!ENTITY remotexulmanager.generate.label        "Generar">
 <!ENTITY remotexulmanager.generate.accesskey    "G">

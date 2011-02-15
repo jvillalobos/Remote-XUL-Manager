@@ -23,12 +23,10 @@
      be changed to the language you're translating to. -->
 <!ENTITY remotexulmanager.labelsIntro.label     "The following fields are all optional. If left blank, the installer uses the default messages included, in English only.">
 
+<!ENTITY remotexulmanager.default.label         "Default text:">
 <!ENTITY remotexulmanager.title.label           "Title">
-<!ENTITY remotexulmanager.titleLong.label       "Appears in all dialogs the add-on shows.">
 <!ENTITY remotexulmanager.warning.label         "Warning message">
-<!ENTITY remotexulmanager.warningLong.label     "Tells users about the security implications of Remote XUL usage.">
 <!ENTITY remotexulmanager.restart.label         "Restart message">
-<!ENTITY remotexulmanager.restartLong.label     "Tells users that the application needs to restart. This only appears when local files are added to the whitelist.">
 
 <!ENTITY remotexulmanager.generate.label        "Generate">
 <!ENTITY remotexulmanager.generate.accesskey    "G">
