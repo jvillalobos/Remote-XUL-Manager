@@ -107,11 +107,10 @@ RXULM.Export = {
         createInstance(Ci.nsIFileInputStream);
     let result =
       {
-        result : RXULM.Permissions.RESULT_FAIL,
+        success : false,
         domains : [],
         invalids : []
       };
-    let hasLocalFiles = false;
     let line = {};
     let addResult;
     let hasMore;
@@ -134,31 +133,19 @@ RXULM.Export = {
           // in case we need to include more data in the future, we'll use
           // commas as separators.
           domain = lineText.split(",")[0];
+          addResult = RXULM.Permissions.add(RXULM.addProtocol(domain));
 
-          if (RXULM.Permissions.LOCAL_FILES != domain) {
-              addResult = RXULM.Permissions.add(RXULM.addProtocol(domain));
-
-              // insert into the right array once we've tried to add it.
-              if (RXULM.Permissions.RESULT_SUCCESS == addResult) {
-                result.domains.push(domain);
-              } else {
-                result.invalids.push(domain);
-              }
-          } else{
-            hasLocalFiles = true;
+          // insert into the right array once we've tried to add it.
+          if (addResult) {
+            result.domains.push(domain);
+          } else {
+            result.invalids.push(domain);
           }
+
         }
       } while(hasMore);
 
-      // the local files permission needs to be added last, otherwise other
-      // permission insertion may fail.
-      if (hasLocalFiles) {
-        RXULM.Permissions.add(RXULM.Permissions.LOCAL_FILES);
-        result.domains.push(RXULM.Permissions.LOCAL_FILES);
-        result.result = RXULM.Permissions.RESULT_RESTART;
-      } else {
-        result.result = RXULM.Permissions.RESULT_SUCCESS;
-      }
+      result.success = true;
     } catch (e) {
       this._logger.error("importDomains\n" + e);
     }

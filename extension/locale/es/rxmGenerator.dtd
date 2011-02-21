@@ -24,7 +24,6 @@
 <!ENTITY remotexulmanager.default.label         "Texto por defecto:">
 <!ENTITY remotexulmanager.title.label           "Título">
 <!ENTITY remotexulmanager.warning.label         "Mensaje de advertencia">
-<!ENTITY remotexulmanager.restart.label         "Mensaje de reinicio">
 
 <!ENTITY remotexulmanager.generate.label        "Generar">
 <!ENTITY remotexulmanager.generate.accesskey    "G">

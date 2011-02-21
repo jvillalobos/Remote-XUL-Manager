@@ -66,7 +66,6 @@ $(build_dir)/%: %
     -e 's/\$$\(DOMAINS\)/$(domains)/g' \
     -e 's/\$$\(TITLE\)/$(title_localized)/g' \
     -e 's/\$$\(WARNING\)/$(warning_localized)/g' \
-    -e 's/\$$\(NEED_RESTART\)/$(restart_localized)/g' \
     $< > $@
 
 $(build_dir):

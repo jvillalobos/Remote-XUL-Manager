@@ -32,6 +32,7 @@ var RXULMInstaller = {
   ALLOW_REMOTE_XUL : "allowXULXBL",
   ALLOW : 1,
   LOCAL_FILES : "<file>",
+  LOCAL_FILE_PREF : "dom.allow_XUL_XBL_for_file",
 
   // The list of domains to include on the whitelist.
   DOMAINS : [ $(DOMAINS) ],
@@ -44,10 +45,6 @@ var RXULMInstaller = {
     "whitelist. Select OK to accept.\nWARNING: Remote XUL is considered " +
     "insecure and should only be enabled when necessary.",
   WARNING_LOCALIZED : "$(WARNING)",
-  // Browser restart message and optional, localized version of the message.
-  NEED_RESTART :
-    "You need to restart this program for all changes to apply.",
-  NEED_RESTART_LOCALIZED : "$(NEED_RESTART)",
 
   /* Permission manager component. */
   _permissionManager : null,
@@ -94,23 +91,8 @@ var RXULMInstaller = {
           domain = this.DOMAINS[i];
 
           if ("string" == typeof(domain) && (0 < domain.length)) {
-            if (this.LOCAL_FILES != domain) {
-              this._add(domain);
-            } else{
-              hasLocalFiles = true;
-            }
+            this._add(domain);
           }
-        }
-
-        // the local files permission needs to be added last, otherwise other
-        // permission insertion may fail.
-        if (hasLocalFiles) {
-          let message =
-            ((0 < this.NEED_RESTART_LOCALIZED.length) ?
-             this.NEED_RESTART_LOCALIZED : this.NEED_RESTART);
-
-          this._add(this.LOCAL_FILES);
-          this._showAlert(message);
         }
       }
     } catch (e) {
@@ -143,22 +125,26 @@ var RXULMInstaller = {
         uri = this._ioService.newURI(aDomain, null, null);
         this._permissionManager.add(uri, this.ALLOW_REMOTE_XUL, this.ALLOW);
       } else {
-        this._addFile();
+        let application;
+
+        if (null != Cc["@mozilla.org/fuel/application;1"]) {
+          // Firefox and Flock.
+          application =
+            Cc["@mozilla.org/fuel/application;1"].
+              getService(Ci.fuelIApplication);
+        } else if (null != Cc["@mozilla.org/smile/application;1"]) {
+          // SeaMonkey.
+          application =
+            Cc["@mozilla.org/smile/application;1"].
+              getService(Ci.smileIApplication);
+        }
+
+        application.prefs.get(LOCAL_FILE_PREF).value = true;
       }
     } catch (e) {
       this._showAlert(
         "Unexpected error adding domain '" + aDomain + "':\n" + e);
     }
-  },
-
-  /**
-   * Adds the special <file> entry to the permissions DB.
-   */
-  _addFile : function() {
-    let connection = this._getDBConnection();
-
-    connection.executeSimpleSQL(this.SQL_ADD);
-    connection.close();
   },
 
   /**
@@ -205,33 +191,5 @@ var RXULMInstaller = {
       function(aAddon) {
         aAddon.uninstall();
       });
-  },
-
-  /**
-   * Adds the special <file> entry to the permissions DB.
-   */
-  _addFile : function() {
-    let connection = this._getDBConnection();
-
-    connection.executeSimpleSQL(
-      "INSERT INTO moz_hosts values(?, '" + this.LOCAL_FILES + "', '" +
-      this.ALLOW_REMOTE_XUL + "', 1, 0, 0)");
-    connection.close();
-  },
-
-  /**
-   * Returns a connection to the permissions database.
-   * @return connection to the permissions database.
-   */
-  _getDBConnection : function() {
-    let dirService =
-      Cc["@mozilla.org/file/directory_service;1"].getService(Ci.nsIProperties);
-    let storageService =
-      Cc["@mozilla.org/storage/service;1"].getService(Ci.mozIStorageService);
-    let dbFile = dirService.get("ProfD", Ci.nsIFile);
-
-    dbFile.append("permissions.sqlite");
-
-    return storageService.openDatabase(dbFile);
   }
 };

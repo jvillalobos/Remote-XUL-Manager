@@ -23,6 +23,3 @@ title_localized :=
 
 # Localized version of the warning message (optional, no quotes).
 warning_localized :=
-
-# Localized version of the restart message (optional, no quotes).
-restart_localized :=

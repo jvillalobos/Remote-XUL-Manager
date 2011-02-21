@@ -52,10 +52,8 @@ RXULM.Generator = {
    * @param aDomains the list of domains to include in the package.
    * @param aTitle an optional localized title for dialogs in the installer.
    * @param aWarning an optional localizaed warning message.
-   * @param aRestartMsg an optional localized version of the "restart
-   * application" message.
    */
-  generateInstaller : function(aFile, aDomains, aTitle, aWarning, aRestartMsg) {
+  generateInstaller : function(aFile, aDomains, aTitle, aWarning) {
     this._logger.debug("generateInstaller");
 
     let zipWriter =
@@ -66,11 +64,9 @@ RXULM.Generator = {
     // prepare the contents of the package.
     this._generateId();
     rdfFile =
-      this._getInstallFile(
-        "install.rdf", aDomains, aTitle, aWarning, aRestartMsg);
+      this._getInstallFile("install.rdf", aDomains, aTitle, aWarning);
     bootFile =
-      this._getInstallFile(
-        "bootstrap.js", aDomains, aTitle, aWarning, aRestartMsg);
+      this._getInstallFile("bootstrap.js", aDomains, aTitle, aWarning);
 
     try {
       // write the package.
@@ -113,12 +109,9 @@ RXULM.Generator = {
    * @param aDomains the list of domains to include in the package.
    * @param aTitle an optional localized title for dialogs in the installer.
    * @param aWarning an optional localizaed warning message.
-   * @param aRestartMsg an optional localized version of the "restart
-   * application" message.
    * @return nsIFile pointing to the installer file.
    */
-  _getInstallFile : function(
-    aFileName, aDomains, aTitle, aWarning, aRestartMsg) {
+  _getInstallFile : function(aFileName, aDomains, aTitle, aWarning) {
     this._logger.trace("_getInstallFile");
 
     let contents = this._getUrlContents(TEMPLATES_URL + aFileName);
@@ -138,12 +131,6 @@ RXULM.Generator = {
       contents = contents.replace(/\$\(WARNING\)/g, aWarning);
     } else {
       contents = contents.replace(/\$\(WARNING\)/g, "");
-    }
-
-    if (("string" == typeof(aRestartMsg)) && (0 < aRestartMsg.length)) {
-      contents = contents.replace(/\$\(NEED_RESTART\)/g, aRestartMsg);
-    } else {
-      contents = contents.replace(/\$\(NEED_RESTART\)/g, "");
     }
 
     return this._writeFile(aFileName, contents);

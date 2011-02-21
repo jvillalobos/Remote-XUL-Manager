@@ -24,6 +24,10 @@ const Ci = Components.interfaces;
  */
 if ("undefined" == typeof(RXULM)) {
   var RXULM = {
+    /* The root branch for all RXM preferences. */
+    get PREF_BRANCH() { return "extensions.rxulm."; },
+    /* The FUEL Application object. */
+    _application : null,
     /* Array of timer references, keeps timeouts alive. */
     _timers : [],
 
@@ -97,6 +101,31 @@ if ("undefined" == typeof(RXULM)) {
       }
 
       return targetDir;
+    },
+
+    /**
+     * Gets the FUEL Application object.
+     */
+    get Application() {
+      if (null == this._application) {
+        if (null != Cc["@mozilla.org/fuel/application;1"]) {
+          // Firefox and Flock.
+          this._application =
+            Cc["@mozilla.org/fuel/application;1"].
+              getService(Ci.fuelIApplication);
+        } else if (null != Cc["@mozilla.org/smile/application;1"]) {
+          // SeaMonkey.
+          this._application =
+            Cc["@mozilla.org/smile/application;1"].
+              getService(Ci.smileIApplication);
+        } else {
+          // Other?
+          this._logger.fatal(
+            "get Application: Couldn't load FUEL or equivalent.");
+        }
+      }
+
+      return this._application;
     },
 
     /**

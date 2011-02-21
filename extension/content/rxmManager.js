@@ -59,6 +59,7 @@ RXULMChrome.Manager = {
   init : function() {
     this._logger = RXULM.getLogger("RXULMChrome.Manager");
     this._logger.debug("init");
+    this._migrateFilePreference();
     this._loadPermissions();
   },
 
@@ -72,7 +73,6 @@ RXULMChrome.Manager = {
       let domains = document.getElementById("domains");
       let allowed = RXULM.Permissions.getAll();
       let allowedCount = allowed.length;
-      let justAddedLocal = false;
       let item;
 
       // clear the current list.
@@ -90,23 +90,38 @@ RXULMChrome.Manager = {
           item.setAttribute(
             "label", RXULM.stringBundle.GetStringFromName("rxm.file.label"));
           item.setAttribute("value", RXULM.Permissions.LOCAL_FILES);
-          justAddedLocal = true;
         }
 
         domains.appendChild(item);
       }
-
-      // adds the "local files" item in case it was added by the user in this
-      // session (the DB doesn't reload).
-      if (!justAddedLocal && RXULM.Permissions.addedLocal) {
-        item = document.createElement("listitem");
-        item.setAttribute(
-          "label", RXULM.stringBundle.GetStringFromName("rxm.file.label"));
-        item.setAttribute("value", RXULM.Permissions.LOCAL_FILES);
-        domains.appendChild(item);
-      }
     } catch (e) {
       this._logger.error("_loadPermissions\n" + e);
+    }
+  },
+
+  /**
+   * Migrate from using the DB entry for the local files permission and use the
+   * more convenient preference instead.
+   */
+  _migrateFilePreference : function() {
+    this._logger.trace("_migrateFilePreference");
+
+    let migratedPref =
+        RXULM.Application.prefs.get(RXULM.PREF_BRANCH + "prefMigrationDone");
+
+    if (!migratedPref.value) {
+      try {
+        // check if we have the local file entry in the DB.
+        if (RXULM.Permissions.hasLocalFileDB()) {
+          // switch to the preference if that's the case.
+          RXULM.Permissions.add(RXULM.Permissions.LOCAL_FILES);
+          RXULM.Permissions.deleteLocalFileDB();
+        }
+
+        migratedPref.value = true;
+      } catch (e) {
+        this._logger.error("_migrateFilePreference\n" + e);
+      }
     }
   },
 
@@ -119,7 +134,6 @@ RXULMChrome.Manager = {
 
     let domain = { value : "" };
     let promptResponse;
-    let result;
 
     promptResponse =
       this.promptService.prompt(
@@ -129,14 +143,9 @@ RXULMChrome.Manager = {
         domain, null, { value : false });
 
     if (promptResponse) {
-      result = RXULM.Permissions.add(RXULM.addProtocol(domain.value));
+      let success = RXULM.Permissions.add(RXULM.addProtocol(domain.value));
 
-      if (RXULM.Permissions.RESULT_FAIL != result) {
-        if (RXULM.Permissions.RESULT_RESTART == result) {
-          RXULM.Permissions.addedLocal = true;
-          this._showRestartPrompt("rxm.addDomain.title");
-        }
-
+      if (success) {
         this._loadPermissions();
       } else {
         this._alert("rxm.addDomain.title", "rxm.invalidDomain.label");
@@ -158,10 +167,8 @@ RXULMChrome.Manager = {
        RXULM.stringBundle.GetStringFromName("rxm.removeOne.label") :
        RXULM.stringBundle.formatStringFromName(
         "rxm.removeMany.label", [ count ], 1));
-    let needsRestart = false;
     let doRemove;
     let item;
-    let result;
 
     doRemove =
       this.promptService.confirm(
@@ -172,17 +179,10 @@ RXULMChrome.Manager = {
       try {
         for (let i = 0; i < count; i ++) {
           item = selected[i];
-          result = RXULM.Permissions.remove(item.getAttribute("value"));
-          needsRestart =
-            (needsRestart || (RXULM.Permissions.RESULT_RESTART == result));
+          RXULM.Permissions.remove(item.getAttribute("value"));
         }
       } catch (e) {
         this._logger.debug("remove\n" + e);
-      }
-
-      if (needsRestart) {
-          RXULM.Permissions.addedLocal = false;
-          this._showRestartPrompt("rxm.removeDomain.title");
       }
 
       this._loadPermissions();
@@ -301,7 +301,9 @@ RXULMChrome.Manager = {
           (Ci.nsIFilePicker.returnReplace == winResult)) {
         let result = RXULM.Export.importDomains(fp.file);
 
-        if (RXULM.Permissions.RESULT_FAIL != result.result) {
+        success = result.success;
+
+        if (success) {
           let importCount = result.domains.length;
           let failCount = result.invalids.length;
           let message =
@@ -324,14 +326,6 @@ RXULMChrome.Manager = {
           this.promptService.alert(
             window, RXULM.stringBundle.GetStringFromName("rxm.import.title"),
             message);
-
-          // show another message if we need to restart.
-          if (RXULM.Permissions.RESULT_RESTART == result.result) {
-            RXULM.Permissions.addedLocal = true;
-            this._showRestartPrompt("rxm.import.title");
-          }
-        } else {
-          success = false;
         }
       }
 
@@ -368,23 +362,6 @@ RXULMChrome.Manager = {
         "remotexulmanager-generator-dialog",
         "chrome,titlebar,centerscreen,dialog,resizable");
     }
-  },
-
-  /**
-   * Shows a prompt telling the user he must restart the browser before
-   * performing any more changes to the list.
-   * @param aTitleKey the key to the string that is used for the title.
-   */
-  _showRestartPrompt : function(aTitleKey) {
-    this._logger.trace("_showRestartPrompt");
-
-    let brand =
-      document.getElementById("brand-bundle").getString("brandShortName");
-
-    this.promptService.alert(
-      window, RXULM.stringBundle.GetStringFromName(aTitleKey),
-      RXULM.stringBundle.formatStringFromName(
-        "rxm.restart.label", [ brand ], 1));
   },
 
   /**
