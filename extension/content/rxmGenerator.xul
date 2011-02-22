@@ -22,9 +22,14 @@
 
 <!DOCTYPE window SYSTEM "chrome://remotexulmanager/locale/rxmGenerator.dtd">
 
-<window id="remotexulmanager-generator-dialog"
+<dialog id="remotexulmanager-generator-dialog"
   windowtype="remotexulmanager-generator-dialog"
   title="&remotexulmanager.generator.title;" persist="width height"
+  buttons="accept,cancel"
+  buttonlabelaccept="&remotexulmanager.generate.label;"
+  buttonaccesskeyaccept="&remotexulmanager.generate.accesskey;"
+  buttondisabledaccept="true"
+  ondialogaccept="RXULMChrome.Generator.generateInstaller(event);"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript"
@@ -76,23 +81,18 @@
             <vbox>
               <label class="default-text"
                 value="&remotexulmanager.default.label;" />
-              <description>The following list of domains will be added to your remote XUL whitelist. Select OK to accept.
-WARNING: Remote XUL is considered insecure and should only be enabled when necessary.
+              <description>
+                The following list of domains will be added to your remote XUL
+                whitelist. Select OK to accept.
+              </description>
+              <description>
+                WARNING: Remote XUL is considered insecure and should only be
+                enabled when necessary.
               </description>
             </vbox>
-          </row>
-          <row>
-            <label control="restart" value="&remotexulmanager.restart.label;" />
-            <textbox id="restart" multiline="true" rows="2" flex="1" />
           </row>
         </rows>
       </grid>
     </groupbox>
-    <hbox id="generate-box">
-      <button id="generate" disabled="true"
-        label="&remotexulmanager.generate.label;"
-        accesskey="&remotexulmanager.generate.accesskey;"
-        oncommand="RXULMChrome.Generator.generateInstaller(event);" />
-    </hbox>
   </vbox>
-</window>
+</dialog>

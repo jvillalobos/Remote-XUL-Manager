@@ -86,8 +86,9 @@ RXULMChrome.Generator = {
     this._logger.debug("select");
 
     let listbox = document.getElementById("domains");
+    let generateButton = document.documentElement.getButton("accept");
 
-    document.getElementById("generate").disabled = (0 == listbox.selectedCount);
+    generateButton.disabled = (0 == listbox.selectedCount);
   },
 
   /**
@@ -133,10 +134,12 @@ RXULMChrome.Generator = {
 
         if ((Ci.nsIFilePicker.returnOK == winResult) ||
             (Ci.nsIFilePicker.returnReplace == winResult)) {
-          RXULM.Generator.generateInstaller(
-            fp.file, domains, document.getElementById("title").value.trim(),
-            document.getElementById("warning").value.trim(),
-            document.getElementById("restart").value.trim());
+          let title = document.getElementById("title").value.trim();
+          let warning =
+            document.getElementById("warning").value.trim().
+              replace(/\n/g, "\\n");
+
+          RXULM.Generator.generateInstaller(fp.file, domains, title, warning);
           RXULM.runWithDelay(function() { window.close(); }, 0);
         }
       } catch (e) {

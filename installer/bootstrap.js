@@ -139,7 +139,7 @@ var RXULMInstaller = {
               getService(Ci.smileIApplication);
         }
 
-        application.prefs.get(LOCAL_FILE_PREF).value = true;
+        application.prefs.setValue(this.LOCAL_FILE_PREF, true);
       }
     } catch (e) {
       this._showAlert(

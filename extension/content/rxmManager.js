@@ -71,6 +71,7 @@ RXULMChrome.Manager = {
 
     try {
       let domains = document.getElementById("domains");
+      let generateItem = document.getElementById("generate-menuitem");
       let allowed = RXULM.Permissions.getAll();
       let allowedCount = allowed.length;
       let item;
@@ -94,6 +95,8 @@ RXULMChrome.Manager = {
 
         domains.appendChild(item);
       }
+
+      generateItem.disabled = (0 == allowedCount);
     } catch (e) {
       this._logger.error("_loadPermissions\n" + e);
     }

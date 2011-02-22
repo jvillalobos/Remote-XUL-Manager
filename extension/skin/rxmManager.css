@@ -26,10 +26,6 @@
   -moz-box-align: baseline;
 }
 
-#generate-box {
-  -moz-box-pack: center;
-}
-
 #remotexulmanager-generator-dialog label,
 #remotexulmanager-generator-dialog description {
   margin-left: 6px;
