@@ -38,14 +38,14 @@ os_type := $(patsubst darwin%,darwin,$(shell echo $(OSTYPE)))
 # The location of the extension profile.
 ifeq ($(os_type), darwin)
   profile_location := \
-    ~/Library/Application\ Support/Firefox/Profiles/$(profile_dir)/extensions/$(extension_uuid)
+    ~/Library/Application\ Support/Firefox/Profiles/$(profile_dir)/extensions/
 else
   ifeq ($(os_type), linux-gnu)
     profile_location := \
-      ~/.mozilla/firefox/$(profile_dir)/extensions/$(extension_uuid)
+      ~/.mozilla/firefox/$(profile_dir)/extensions/
   else
     profile_location := \
-      "$(subst \,\\,$(APPDATA))\\Mozilla\\Firefox\\Profiles\\$(profile_dir)\\extensions\\$(extension_uuid)"
+      "$(subst \,\\,$(APPDATA))\\Mozilla\\Firefox\\Profiles\\$(profile_dir)\\extensions\\"
   endif
 endif
 
@@ -81,26 +81,16 @@ xpi_built := install.rdf \
              $(wildcard locale/*/*.properties) \
              $(wildcard modules/*.js) \
              $(template_files) \
-             defaults/preferences/$(extension_name).js
-
-xpi_root := install.rdf \
-            chrome.manifest \
-            content \
-            skin \
-            locale \
-            modules \
-            defaults
-
-# This builds everything except for the actual XPI, and then it copies it to the
-# specified profile directory, allowing a quick update that requires no install.
-.PHONY: install
-install: $(xpi_built) $(xpi_root)
-	@echo "Installing in profile folder: $(profile_location)"
-	@cp -RfL $(xpi_root) $(profile_location)
-	@echo "Installing in profile folder. Done!"
-	@echo
+#             defaults/preferences/$(extension_name).js
 
 $(xpi_file): $(xpi_built)
 	@echo "Creating XPI file."
 	@$(ZIP) $(xpi_file) $(xpi_built)
 	@echo "Creating XPI file. Done!"
+
+.PHONY: install
+install: $(xpi_file)
+	@echo "Installing in profile folder: $(profile_location)"
+	@cp -fL $(xpi_file) $(profile_location)/$(extension_uuid).xpi
+	@echo "Installing in profile folder. Done!"
+	@echo

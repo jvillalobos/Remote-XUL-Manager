@@ -106,22 +106,15 @@ RXULMChrome.Manager = {
   _migrateFilePreference : function() {
     this._logger.trace("_migrateFilePreference");
 
-    let migratedPref =
-        RXULM.Application.prefs.get(RXULM.PREF_BRANCH + "prefMigrationDone");
-
-    if (!migratedPref.value) {
-      try {
-        // check if we have the local file entry in the DB.
-        if (RXULM.Permissions.hasLocalFileDB()) {
-          // switch to the preference if that's the case.
-          RXULM.Permissions.add(RXULM.Permissions.LOCAL_FILES);
-          RXULM.Permissions.deleteLocalFileDB();
-        }
-
-        migratedPref.value = true;
-      } catch (e) {
-        this._logger.error("_migrateFilePreference\n" + e);
+    try {
+      // check if we have the local file entry in the DB.
+      if (RXULM.Permissions.hasLocalFileDB()) {
+        // switch to the preference if that's the case.
+        RXULM.Permissions.add(RXULM.Permissions.LOCAL_FILES);
+        RXULM.Permissions.deleteLocalFileDB();
       }
+    } catch (e) {
+      this._logger.error("_migrateFilePreference\n" + e);
     }
   },
 

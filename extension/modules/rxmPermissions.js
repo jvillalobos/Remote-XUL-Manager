@@ -40,8 +40,6 @@ RXULM.Permissions = {
   _permissionManager : null,
   /* IO Service. */
   _ioService : null,
-  /* Preference that indicates local files have remote XUL permission. */
-  _localFilePref : null,
 
   /* "Domain" identifier for all local files. */
   get LOCAL_FILES() { return "<file>"; },
@@ -58,8 +56,6 @@ RXULM.Permissions = {
         getService(Ci.nsIPermissionManager);
     this._ioService =
       Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-
-    this._localFilePref = RXULM.Application.prefs.get(LOCAL_FILE_PREF);
   },
 
   /**
@@ -74,16 +70,18 @@ RXULM.Permissions = {
 
     try  {
       let enumerator = this._permissionManager.enumerator;
+      let localFilePref = RXULM.Application.prefs.get(LOCAL_FILE_PREF);
 
       while (enumerator.hasMoreElements()) {
         permission = enumerator.getNext().QueryInterface(Ci.nsIPermission);
 
-        if (ALLOW_REMOTE_XUL == permission.type) {
+        if ((ALLOW_REMOTE_XUL == permission.type) &&
+            (this.LOCAL_FILES != permission.host)) {
           list.push(permission.host);
         }
       }
 
-      if (this._localFilePref.value) {
+      if ((null != localFilePref) && localFilePref.value) {
         list.push(this.LOCAL_FILES);
       }
     } catch (e) {
@@ -109,7 +107,7 @@ RXULM.Permissions = {
 
         this._permissionManager.add(uri, ALLOW_REMOTE_XUL, ALLOW);
       } else {
-        this._localFilePref.value = true;
+        RXULM.Application.prefs.setValue(LOCAL_FILE_PREF, true);
       }
 
       success = true;
@@ -134,7 +132,7 @@ RXULM.Permissions = {
       if (this.LOCAL_FILES != aDomain) {
         this._permissionManager.remove(aDomain, ALLOW_REMOTE_XUL);
       } else {
-        this._localFilePref.value = false;
+        RXULM.Application.prefs.setValue(LOCAL_FILE_PREF, false);
       }
 
       success = true;
@@ -167,7 +165,7 @@ RXULM.Permissions = {
     let statement = connection.createStatement(SQL_SELECT);
     let result = statement.executeStep();
 
-    statement.reset();
+    statement.finalize();
     connection.close();
 
     return result;
