@@ -23,7 +23,7 @@
     <em:id>remotexulmanager@xulforge.com</em:id>
     <em:name>Remote XUL Manager</em:name>
     <em:description>Manages the Remote XUL whitelist.</em:description>
-    <em:version>0.9.1</em:version>
+    <em:version>0.9.2</em:version>
     <em:creator>Jorge Villalobos</em:creator>
     <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
     <em:type>2</em:type>
@@ -37,4 +37,15 @@
       </Description>
     </em:targetApplication>
   </Description>
+
+    <!-- Localized versions of the description-->
+     <em:localized>
+      <Description>
+        <em:locale>es</em:locale>
+        <em:name>Remote XUL Manager</em:name>
+        <em:description>Administra la lista de XUL Remoto.</em:description>
+        <em:creator>Jorge Villalobos</em:creator>
+        <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
+      </Description>
+    </em:localized>
 </RDF>

@@ -12,10 +12,8 @@
   - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   - See the License for the specific language governing permissions and
   - limitations under the License.
-  -->
+  
 
-<!ENTITY rxm.menu.label           "Remote XUL Manager">
-<!ENTITY rxm.menu.accesskey       "X">
-
-<!-- Used in the localized version of install.rdf -->
-<!ENTITY rxm.manifestDescription  "Manages the Remote XUL whitelist.">
+-->
+<!ENTITY rxm.menu.label "Fjärr-XUL-hanteraren">
+<!ENTITY rxm.menu.accesskey "X">

@@ -1,0 +1,9 @@
+<!ENTITY remotexulmanager.generator.title "Création d'un installateur">
+<!ENTITY remotexulmanager.generatorIntro.label "Cet outil crée un module qui modifie la liste blanche des XUL distants avec un minimum d'intervention de l'utilisateur.">
+<!ENTITY remotexulmanager.selectDomains.label "Choisir les domaines à inclure dans l'installateur :">
+<!ENTITY remotexulmanager.labelsIntro.label "Les champs suivants sont tous facultatifs. Si vous les laissez vierges, l'installateur utilisera les messages par défaut qui s'y trouvent, en anglais seulement.">
+<!ENTITY remotexulmanager.default.label "Texte par défaut :">
+<!ENTITY remotexulmanager.title.label "Titre">
+<!ENTITY remotexulmanager.warning.label "Message d'alerte">
+<!ENTITY remotexulmanager.generate.label "Créer">
+<!ENTITY remotexulmanager.generate.accesskey "C">

@@ -1,0 +1,16 @@
+<!ENTITY remotexulmanager.manager.title "Gestionnaire de XUl distant">
+<!ENTITY remotexulmanager.file.label "Fichier">
+<!ENTITY remotexulmanager.file.accesskey "F">
+<!ENTITY remotexulmanager.import.label "Importer…">
+<!ENTITY remotexulmanager.import.accesskey "I">
+<!ENTITY remotexulmanager.export.label "Exporter la sélection…">
+<!ENTITY remotexulmanager.export.accesskey "E">
+<!ENTITY remotexulmanager.generate.label "Créer un installateur…">
+<!ENTITY remotexulmanager.generate.accesskey "C">
+<!ENTITY remotexulmanager.close.label "Fermer">
+<!ENTITY remotexulmanager.close.accesskey "M">
+<!ENTITY remotexulmanager.allowed.label "Domaines autorisés au XUL distant :">
+<!ENTITY remotexulmanager.add.label "Ajouter…">
+<!ENTITY remotexulmanager.add.accesskey "A">
+<!ENTITY remotexulmanager.remove.label "Supprimer">
+<!ENTITY remotexulmanager.remove.accesskey "S">

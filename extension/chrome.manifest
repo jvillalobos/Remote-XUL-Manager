@@ -22,5 +22,7 @@ locale    remotexulmanager  en-US         locale/en-US/
 locale    remotexulmanager  es-ES         locale/es/
 locale    remotexulmanager  es-AR         locale/es/
 locale    remotexulmanager  es-CL         locale/es/
+locale    remotexulmanager  fr            locale/fr/
+locale    remotexulmanager  sv-SE         locale/sv-SE/
 
 overlay chrome://browser/content/browser.xul  chrome://remotexulmanager/content/rxmBrowserOverlay.xul
