@@ -18,4 +18,4 @@
 <!ENTITY rxm.menu.accesskey       "X">
 
 <!-- Used in the localized version of install.rdf -->
-<!ENTITY rxm.manifestDescription  "Administra la lista de XUL Remoto.>
+<!ENTITY rxm.manifestDescription  "Administra la lista de XUL Remoto.">

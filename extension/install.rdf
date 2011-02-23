@@ -36,10 +36,9 @@
         <em:maxVersion>4.0.*</em:maxVersion>
       </Description>
     </em:targetApplication>
-  </Description>
 
     <!-- Localized versions of the description-->
-     <em:localized>
+    <em:localized>
       <Description>
         <em:locale>es</em:locale>
         <em:name>Remote XUL Manager</em:name>
@@ -48,4 +47,5 @@
         <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
       </Description>
     </em:localized>
+  </Description>
 </RDF>
