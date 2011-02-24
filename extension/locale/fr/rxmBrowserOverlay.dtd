@@ -1,2 +1,3 @@
 <!ENTITY rxm.menu.label "Gestionnaire de XUL distant">
 <!ENTITY rxm.menu.accesskey "X">
+<!ENTITY rxm.manifestDescription "Gestion de la liste blanche autorisant le XUL distant.">

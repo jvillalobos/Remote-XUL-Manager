@@ -18,6 +18,7 @@ content   remotexulmanager                content/
 skin      remotexulmanager  classic/1.0   skin/
 resource  remotexulmanager                modules/
 
+#locale    remotexulmanager  de            locale/de/
 locale    remotexulmanager  en-US         locale/en-US/
 locale    remotexulmanager  es-ES         locale/es/
 locale    remotexulmanager  es-AR         locale/es/

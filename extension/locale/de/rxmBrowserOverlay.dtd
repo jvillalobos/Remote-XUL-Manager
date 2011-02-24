@@ -13,9 +13,8 @@
   - See the License for the specific language governing permissions and
   - limitations under the License.
   
-
-
 -->
-<!ENTITY rxm.menu.label "Fjärr-XUL-hanteraren">
+<!ENTITY rxm.menu.label "Nicht-natives XUL verwalten">
 <!ENTITY rxm.menu.accesskey "X">
-<!ENTITY rxm.manifestDescription "Hanterar listan över betrodda fjärr-XUL:er.">
+<!-- Used in the localized version of install.rdf -->
+<!ENTITY rxm.manifestDescription "Verwaltet die Liste der erlaubten Quellen von nicht-nativem XUL.">

@@ -40,6 +40,16 @@
     <!-- Localized versions of the description-->
     <em:localized>
       <Description>
+        <em:locale>de</em:locale>
+        <em:name>Remote XUL Manager</em:name>
+        <em:description>Verwaltet die Liste der erlaubten Quellen von nicht-nativem XUL.</em:description>
+        <em:creator>Jorge Villalobos</em:creator>
+        <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
+        <em:translator>Archaeopteryx (Babelzilla)</em:translator>
+      </Description>
+    </em:localized>
+    <em:localized>
+      <Description>
         <em:locale>es</em:locale>
         <em:name>Remote XUL Manager</em:name>
         <em:description>Administra la lista de XUL Remoto.</em:description>
@@ -47,5 +57,26 @@
         <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
       </Description>
     </em:localized>
+    <em:localized>
+      <Description>
+        <em:locale>fr</em:locale>
+        <em:name>Remote XUL Manager</em:name>
+        <em:description>Gestion de la liste blanche autorisant le XUL distant.</em:description>
+        <em:creator>Jorge Villalobos</em:creator>
+        <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
+        <em:translator>Goofy (Babelzilla)</em:translator>
+      </Description>
+    </em:localized>
+    <em:localized>
+      <Description>
+        <em:locale>sv-SE</em:locale>
+        <em:name>Remote XUL Manager</em:name>
+        <em:description>Hanterar listan över betrodda fjärr-XUL:er.</em:description>
+        <em:creator>Jorge Villalobos</em:creator>
+        <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
+        <em:translator>Lakrits (Babelzilla)</em:translator>
+      </Description>
+    </em:localized>
+
   </Description>
 </RDF>
