@@ -26,4 +26,5 @@ locale    remotexulmanager  es-CL         locale/es/
 locale    remotexulmanager  fr            locale/fr/
 locale    remotexulmanager  sv-SE         locale/sv-SE/
 
-overlay chrome://browser/content/browser.xul  chrome://remotexulmanager/content/rxmBrowserOverlay.xul
+overlay chrome://browser/content/browser.xul      chrome://remotexulmanager/content/rxmBrowserOverlay.xul
+overlay chrome://navigator/content/navigator.xul  chrome://remotexulmanager/content/rxmBrowserOverlay.xul  application={92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}

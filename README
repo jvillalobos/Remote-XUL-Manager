@@ -1,9 +1,0 @@
-Remote XUL Manager is a tool created in response to the following Mozilla
-bug: https://bugzilla.mozilla.org/show_bug.cgi?id=595260.
-
-This is an extension for Firefox (and potentially other applications) that
-allows developers to easily manage the Remote XUL domain whitelist, enabling
-specific domains where the user wants to enable remote XUL.
-
-Version 0.6 is a basic add/remove tool. Future versions will likely include more
-useful features for remote deployment.

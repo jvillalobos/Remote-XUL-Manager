@@ -32,8 +32,8 @@ RXULMChrome.BrowserOverlay = {
    */
   launchManager : function(aEvent) {
     let windowManager =
-      Cc['@mozilla.org/appshell/window-mediator;1'].
-        getService(Ci.nsIWindowMediator);
+      Components.classes['@mozilla.org/appshell/window-mediator;1'].
+        getService(Components.interfaces.nsIWindowMediator);
     let win =
       windowManager.getMostRecentWindow("remotexulmanager-manager-dialog");
 
