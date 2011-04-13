@@ -1,0 +1,9 @@
+<!ENTITY remotexulmanager.generator.title "安装程序生成器">
+<!ENTITY remotexulmanager.generatorIntro.label "此工具创建一个附加组件，它只需最小的用户介入就能修改远程 XUL 白名单。">
+<!ENTITY remotexulmanager.selectDomains.label "选择要包含到安装程序中的域名：">
+<!ENTITY remotexulmanager.labelsIntro.label "以下字段都是可选的。如果留空，安装程序将使用默认的消息（英文）。">
+<!ENTITY remotexulmanager.default.label "默认文本：">
+<!ENTITY remotexulmanager.title.label "标题">
+<!ENTITY remotexulmanager.warning.label "警告消息">
+<!ENTITY remotexulmanager.generate.label "生成">
+<!ENTITY remotexulmanager.generate.accesskey "G">

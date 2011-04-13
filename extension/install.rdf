@@ -23,7 +23,7 @@
     <em:id>remotexulmanager@xulforge.com</em:id>
     <em:name>Remote XUL Manager</em:name>
     <em:description>Manages the Remote XUL whitelist.</em:description>
-    <em:version>1.0</em:version>
+    <em:version>1.0.1</em:version>
     <em:creator>Jorge Villalobos</em:creator>
     <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
     <em:type>2</em:type>
@@ -42,7 +42,7 @@
       <Description>
         <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
         <em:minVersion>2.1b2</em:minVersion>
-        <em:maxVersion>2.1.*</em:maxVersion>
+        <em:maxVersion>2.1b3</em:maxVersion>
       </Description>
     </em:targetApplication>
 
@@ -84,6 +84,16 @@
         <em:creator>Jorge Villalobos</em:creator>
         <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
         <em:translator>Lakrits (Babelzilla)</em:translator>
+      </Description>
+    </em:localized>
+    <em:localized>
+      <Description>
+        <em:locale>zh-CN</em:locale>
+        <em:name>Remote XUL Manager</em:name>
+        <em:description>管理远程 XUL 白名单。</em:description>
+        <em:creator>Jorge Villalobos</em:creator>
+        <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
+        <em:translator>yfdyh000 (Babelzilla)</em:translator>
       </Description>
     </em:localized>
 

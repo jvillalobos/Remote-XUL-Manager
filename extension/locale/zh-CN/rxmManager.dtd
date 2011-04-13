@@ -1,0 +1,16 @@
+<!ENTITY remotexulmanager.manager.title "远程 XUL 管理器">
+<!ENTITY remotexulmanager.file.label "文件">
+<!ENTITY remotexulmanager.file.accesskey "F">
+<!ENTITY remotexulmanager.import.label "导入...">
+<!ENTITY remotexulmanager.import.accesskey "I">
+<!ENTITY remotexulmanager.export.label "导出所选...">
+<!ENTITY remotexulmanager.export.accesskey "E">
+<!ENTITY remotexulmanager.generate.label "生成安装程序...">
+<!ENTITY remotexulmanager.generate.accesskey "G">
+<!ENTITY remotexulmanager.close.label "关闭">
+<!ENTITY remotexulmanager.close.accesskey "C">
+<!ENTITY remotexulmanager.allowed.label "远程 XUL 许可域名：">
+<!ENTITY remotexulmanager.add.label "添加...">
+<!ENTITY remotexulmanager.add.accesskey "A">
+<!ENTITY remotexulmanager.remove.label "移除">
+<!ENTITY remotexulmanager.remove.accesskey "R">
