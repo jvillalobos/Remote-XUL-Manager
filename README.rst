@@ -7,6 +7,7 @@ Remote XUL (XUL through HTTP) has been removed from Firefox 4 (see `bug 546857`_
 3. That's it! You should be able to access the site again without any problems.
 
 **How to use on Mobile Firefox (version 1.1 and above)**
+
 1. Enter *about:remotexul* in the address bar.
 2. To add a domain, click on the Add button and then enter the domain name of the site you want to add to the list (*www.mozilla.org*, for example).
 3. That's it! You should be able to access the site again without any problems.
