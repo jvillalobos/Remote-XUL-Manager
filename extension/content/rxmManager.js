@@ -96,7 +96,10 @@ RXULMChrome.Manager = {
         domains.appendChild(item);
       }
 
-      generateItem.disabled = (0 == allowedCount);
+      // null in the about:remotexul window.
+      if (null != generateItem) {
+        generateItem.disabled = (0 == allowedCount);
+      }
     } catch (e) {
       this._logger.error("_loadPermissions\n" + e);
     }
@@ -198,7 +201,11 @@ RXULMChrome.Manager = {
     let listbox = document.getElementById("domains");
 
     removeButton.disabled = (0 == listbox.selectedCount);
-    exportMenu.disabled = (0 == listbox.selectedCount);
+
+    // null in the about:remotexul window.
+    if (null != exportMenu) {
+      exportMenu.disabled = (0 == listbox.selectedCount);
+    }
   },
 
   /**

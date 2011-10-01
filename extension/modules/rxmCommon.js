@@ -24,10 +24,8 @@ const Ci = Components.interfaces;
  */
 if ("undefined" == typeof(RXULM)) {
   var RXULM = {
-    /* The root branch for all RXM preferences. */
-    get PREF_BRANCH() { return "extensions.rxulm."; },
-    /* The FUEL Application object. */
-    _application : null,
+    /* The preferences service. */
+    _prefService : null,
     /* Array of timer references, keeps timeouts alive. */
     _timers : [],
 
@@ -104,28 +102,15 @@ if ("undefined" == typeof(RXULM)) {
     },
 
     /**
-     * Gets the FUEL Application object.
+     * Gets the preferences service.
      */
-    get Application() {
-      if (null == this._application) {
-        if (null != Cc["@mozilla.org/fuel/application;1"]) {
-          // Firefox and Flock.
-          this._application =
-            Cc["@mozilla.org/fuel/application;1"].
-              getService(Ci.fuelIApplication);
-        } else if (null != Cc["@mozilla.org/smile/application;1"]) {
-          // SeaMonkey.
-          this._application =
-            Cc["@mozilla.org/smile/application;1"].
-              getService(Ci.smileIApplication);
-        } else {
-          // Other?
-          this._logger.fatal(
-            "get Application: Couldn't load FUEL or equivalent.");
-        }
+    get prefService() {
+      if (null == this._prefService) {
+        this._prefService =
+          Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch);
       }
 
-      return this._application;
+      return this._prefService;
     },
 
     /**

@@ -125,21 +125,10 @@ var RXULMInstaller = {
         uri = this._ioService.newURI(aDomain, null, null);
         this._permissionManager.add(uri, this.ALLOW_REMOTE_XUL, this.ALLOW);
       } else {
-        let application;
+        let prefService =
+          Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch);
 
-        if (null != Cc["@mozilla.org/fuel/application;1"]) {
-          // Firefox and Flock.
-          application =
-            Cc["@mozilla.org/fuel/application;1"].
-              getService(Ci.fuelIApplication);
-        } else if (null != Cc["@mozilla.org/smile/application;1"]) {
-          // SeaMonkey.
-          application =
-            Cc["@mozilla.org/smile/application;1"].
-              getService(Ci.smileIApplication);
-        }
-
-        application.prefs.setValue(this.LOCAL_FILE_PREF, true);
+        prefService.setBoolPref(this.LOCAL_FILE_PREF, true);
       }
     } catch (e) {
       this._showAlert(

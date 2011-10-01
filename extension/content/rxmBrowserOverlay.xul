@@ -20,16 +20,15 @@
 
 <!DOCTYPE overlay SYSTEM "chrome://remotexulmanager/locale/rxmBrowserOverlay.dtd">
 
-<overlay id="powersearchbox-browser-overlay"
+<overlay id="rxm-browser-overlay"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript"
     src="chrome://remotexulmanager/content/rxmBrowserOverlay.js" />
 
   <!-- Main menu. -->
-  <menupopup id="menu_ToolsPopup">
-    <menuitem id="rxm-main-menu"
-      insertafter="javascriptConsole,devToolsSeparator"
+  <menupopup id="menuWebDeveloperPopup">
+    <menuitem id="rxm-main-menu" insertbefore="devToolsEndSeparator"
       label="&rxm.menu.label;" accesskey="&rxm.menu.accesskey;"
       oncommand="RXULMChrome.BrowserOverlay.launchManager(event);" />
   </menupopup>

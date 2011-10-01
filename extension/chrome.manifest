@@ -27,5 +27,11 @@ locale    remotexulmanager  fr            locale/fr/
 locale    remotexulmanager  sv-SE         locale/sv-SE/
 locale    remotexulmanager  zh-CN         locale/zh-CN/
 
-overlay chrome://browser/content/browser.xul      chrome://remotexulmanager/content/rxmBrowserOverlay.xul
-overlay chrome://navigator/content/navigator.xul  chrome://remotexulmanager/content/rxmBrowserOverlay.xul  application={92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}
+overlay chrome://browser/content/browser.xul      chrome://remotexulmanager/content/rxmBrowserOverlay.xul   application!={a23983c0-fd0e-11dc-95ff-0800200c9a66}
+
+# Mobile Firefox.
+component   {aa76f1c0-a902-4afe-ab37-e51d8c6d2e68}                components/aboutRXM.js                  application={a23983c0-fd0e-11dc-95ff-0800200c9a66}
+contract    @mozilla.org/network/protocol/about;1?what=remotexul  {aa76f1c0-a902-4afe-ab37-e51d8c6d2e68}  application={a23983c0-fd0e-11dc-95ff-0800200c9a66}
+
+# SeaMonkey.
+overlay chrome://navigator/content/navigator.xul  chrome://remotexulmanager/content/rxmBrowserOverlay.xul   application={92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}

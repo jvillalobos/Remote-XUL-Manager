@@ -80,6 +80,7 @@ xpi_built := install.rdf \
              $(wildcard locale/*/*.dtd) \
              $(wildcard locale/*/*.properties) \
              $(wildcard modules/*.js) \
+             $(wildcard components/*.js) \
              $(template_files) \
 #             defaults/preferences/$(extension_name).js
 

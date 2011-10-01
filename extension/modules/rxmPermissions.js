@@ -70,7 +70,13 @@ RXULM.Permissions = {
 
     try  {
       let enumerator = this._permissionManager.enumerator;
-      let localFilePref = RXULM.Application.prefs.get(LOCAL_FILE_PREF);
+      let allowLocalFiles = false;
+
+      try {
+        allowLocalFiles = RXULM.prefService.getBoolPref(LOCAL_FILE_PREF);
+      } catch (e) {
+        this._logger.info("getAll. No value for local files pref.");
+      }
 
       while (enumerator.hasMoreElements()) {
         permission = enumerator.getNext().QueryInterface(Ci.nsIPermission);
@@ -81,7 +87,7 @@ RXULM.Permissions = {
         }
       }
 
-      if ((null != localFilePref) && localFilePref.value) {
+      if (allowLocalFiles) {
         list.push(this.LOCAL_FILES);
       }
     } catch (e) {
@@ -107,7 +113,7 @@ RXULM.Permissions = {
 
         this._permissionManager.add(uri, ALLOW_REMOTE_XUL, ALLOW);
       } else {
-        RXULM.Application.prefs.setValue(LOCAL_FILE_PREF, true);
+        RXULM.prefService.setBoolPref(LOCAL_FILE_PREF, true);
       }
 
       success = true;
@@ -132,7 +138,7 @@ RXULM.Permissions = {
       if (this.LOCAL_FILES != aDomain) {
         this._permissionManager.remove(aDomain, ALLOW_REMOTE_XUL);
       } else {
-        RXULM.Application.prefs.setValue(LOCAL_FILE_PREF, false);
+        RXULM.prefService.setBoolPref(LOCAL_FILE_PREF, false);
       }
 
       success = true;

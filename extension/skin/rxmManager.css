@@ -18,6 +18,10 @@
   height: 16em;
 }
 
+#remotexulmanager-about-window > #domains {
+  height: 8em;
+}
+
 #window-content {
   padding: 1em;
 }
