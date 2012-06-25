@@ -55,6 +55,23 @@
       </Description>
     </em:targetApplication>
 
+    <em:targetApplication>
+      <Description>
+        <!-- Komodo IDE -->
+        <em:id>{36E66FA0-F259-11D9-850E-000D935D3368}</em:id>
+        <em:minVersion>7.0</em:minVersion>
+        <em:maxVersion>7.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+    <em:targetApplication>
+      <Description>
+        <!-- Komodo Edit -->
+        <em:id>{b1042fb5-9e9c-11db-b107-000d935d3368}</em:id>
+        <em:minVersion>7.0</em:minVersion>
+        <em:maxVersion>7.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
     <!-- Localized versions of the description-->
     <em:localized>
       <Description>
