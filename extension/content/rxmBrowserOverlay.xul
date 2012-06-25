@@ -47,4 +47,11 @@
       oncommand="RXULMChrome.BrowserOverlay.launchManager(event);" />
   </menupopup>
 
+  <!-- Tools popup (Komodo). -->
+  <menupopup id="popup_tools">
+    <menuitem id="rxm-main-menu-ko" label="&rxm.menu.label;"
+      accesskey="&rxm.menu.accesskey;"
+      oncommand="RXULMChrome.BrowserOverlay.launchManager(event);" />
+  </menupopup>
+
 </overlay>
