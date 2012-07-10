@@ -35,3 +35,6 @@ contract    @mozilla.org/network/protocol/about;1?what=remotexul  {aa76f1c0-a902
 
 # SeaMonkey.
 overlay chrome://navigator/content/navigator.xul  chrome://remotexulmanager/content/rxmBrowserOverlay.xul   application={92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}
+
+# Komodo IDE / Edit
+overlay chrome://komodo/content/komodo.xul chrome://remotexulmanager/content/rxmBrowserOverlay.xul
