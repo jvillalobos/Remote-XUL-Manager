@@ -23,7 +23,7 @@
     <em:id>$(ID)@rxm.xulforge.com</em:id>
     <em:name>Remote XUL Installer (generated - $(ID))</em:name>
     <em:description>Automatically installs a set of domains to the Remote XUL whitelist.</em:description>
-    <em:version>1.1.1</em:version>
+    <em:version>1.1.2</em:version>
     <em:creator>Remore XUL Manager Generator</em:creator>
     <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
     <em:bootstrap>true</em:bootstrap>
@@ -34,7 +34,7 @@
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>4.0</em:minVersion>
-        <em:maxVersion>10.*</em:maxVersion>
+        <em:maxVersion>14.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
@@ -43,7 +43,7 @@
       <Description>
         <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
         <em:minVersion>2.2</em:minVersion>
-        <em:maxVersion>2.6.*</em:maxVersion>
+        <em:maxVersion>2.11.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
@@ -52,7 +52,25 @@
       <Description>
         <em:id>{a23983c0-fd0e-11dc-95ff-0800200c9a66}</em:id>
         <em:minVersion>6.0</em:minVersion>
-        <em:maxVersion>10.*</em:maxVersion>
+        <em:maxVersion>14.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <!-- Komodo IDE -->
+    <em:targetApplication>
+      <Description>
+        <em:id>{36E66FA0-F259-11D9-850E-000D935D3368}</em:id>
+        <em:minVersion>7.0</em:minVersion>
+        <em:maxVersion>7.*</em:maxVersion>
+      </Description>
+    </em:targetApplication>
+
+    <!-- Komodo Edit -->
+    <em:targetApplication>
+      <Description>
+        <em:id>{b1042fb5-9e9c-11db-b107-000d935d3368}</em:id>
+        <em:minVersion>7.0</em:minVersion>
+        <em:maxVersion>7.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
