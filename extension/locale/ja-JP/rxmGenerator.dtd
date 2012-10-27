@@ -1,0 +1,9 @@
+<!ENTITY remotexulmanager.generator.title "インストーラ生成ツール">
+<!ENTITY remotexulmanager.generatorIntro.label "このツールは、リモート XML ホワイトリストを、ユーザの介入を最小にして修正するアドオンを作成します。">
+<!ENTITY remotexulmanager.selectDomains.label "インストーラに含めるドメインを選択してください:">
+<!ENTITY remotexulmanager.labelsIntro.label "以下の欄はすべて省略可能です。空欄にすると、インストーラは既定のメッセージ (英語のみ) を使用します。">
+<!ENTITY remotexulmanager.default.label "既定のテキスト:">
+<!ENTITY remotexulmanager.title.label "タイトル">
+<!ENTITY remotexulmanager.warning.label "警告メッセージ">
+<!ENTITY remotexulmanager.generate.label "生成">
+<!ENTITY remotexulmanager.generate.accesskey "G">

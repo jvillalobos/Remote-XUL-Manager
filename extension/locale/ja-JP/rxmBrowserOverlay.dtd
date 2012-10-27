@@ -1,0 +1,3 @@
+<!ENTITY rxm.menu.label "リモート XUL マネージャ">
+<!ENTITY rxm.menu.accesskey "X">
+<!ENTITY rxm.manifestDescription "リモート XUL ホワイトリストを管理します。">

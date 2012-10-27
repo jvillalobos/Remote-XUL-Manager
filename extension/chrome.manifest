@@ -24,6 +24,7 @@ locale    remotexulmanager  es-ES         locale/es/
 locale    remotexulmanager  es-AR         locale/es/
 locale    remotexulmanager  es-CL         locale/es/
 locale    remotexulmanager  fr            locale/fr/
+locale    remotexulmanager  ja-JP         locale/ja-JP/
 locale    remotexulmanager  sv-SE         locale/sv-SE/
 locale    remotexulmanager  zh-CN         locale/zh-CN/
 

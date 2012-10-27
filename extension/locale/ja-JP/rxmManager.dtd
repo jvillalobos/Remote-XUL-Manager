@@ -1,0 +1,16 @@
+<!ENTITY remotexulmanager.manager.title "リモート XUL マネージャ">
+<!ENTITY remotexulmanager.file.label "ファイル">
+<!ENTITY remotexulmanager.file.accesskey "F">
+<!ENTITY remotexulmanager.import.label "インポート…">
+<!ENTITY remotexulmanager.import.accesskey "I">
+<!ENTITY remotexulmanager.export.label "選択されたものをエクスポート…">
+<!ENTITY remotexulmanager.export.accesskey "E">
+<!ENTITY remotexulmanager.generate.label "インストーラを生成…">
+<!ENTITY remotexulmanager.generate.accesskey "G">
+<!ENTITY remotexulmanager.close.label "閉じる">
+<!ENTITY remotexulmanager.close.accesskey "C">
+<!ENTITY remotexulmanager.allowed.label "リモート XUL を許可するドメイン:">
+<!ENTITY remotexulmanager.add.label "追加…">
+<!ENTITY remotexulmanager.add.accesskey "A">
+<!ENTITY remotexulmanager.remove.label "削除">
+<!ENTITY remotexulmanager.remove.accesskey "R">
