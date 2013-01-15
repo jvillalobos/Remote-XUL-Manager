@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jorge Villalobos
+ * Copyright 2013 Jorge Villalobos
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ const SQL_DELETE =
   "DELETE FROM moz_hosts WHERE host='<file>' AND type='" + ALLOW_REMOTE_XUL +
   "'";
 
-Components.utils.import("resource://remotexulmanager/rxmCommon.js");
+Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
 
 RXULM.Permissions = {
   /* Logger for this object. */

@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jorge Villalobos
+ * Copyright 2013 Jorge Villalobos
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-Components.utils.import("resource://remotexulmanager/rxmCommon.js");
-Components.utils.import("resource://remotexulmanager/rxmPermissions.js");
+Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
+Components.utils.import("chrome://rxm-modules/content/rxmPermissions.js");
 
 /**
  * RXULMChrome namespace.
@@ -234,7 +234,7 @@ RXULMChrome.Manager = {
 
       try {
         // only import the script when necessary.
-        Components.utils.import("resource://remotexulmanager/rxmExport.js");
+        Components.utils.import("chrome://rxm-modules/content/rxmExport.js");
 
         let fp =
           Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
@@ -283,7 +283,7 @@ RXULMChrome.Manager = {
 
     try {
       // only import the script when necessary.
-      Components.utils.import("resource://remotexulmanager/rxmExport.js");
+      Components.utils.import("chrome://rxm-modules/content/rxmExport.js");
 
       let fp =
         Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);

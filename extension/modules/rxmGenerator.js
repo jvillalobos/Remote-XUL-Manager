@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Jorge Villalobos
+ * Copyright 2013 Jorge Villalobos
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@ const FILE_TRUNCATE = 0x20;
 // The location of the template files.
 const TEMPLATES_URL = "chrome://remotexulmanager/content/templates/";
 
-Components.utils.import("resource://remotexulmanager/rxmCommon.js");
-Components.utils.import("resource://remotexulmanager/rxmPermissions.js");
+Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
+Components.utils.import("chrome://rxm-modules/content/rxmPermissions.js");
 
 RXULM.Generator = {
   /* Logger for this object. */

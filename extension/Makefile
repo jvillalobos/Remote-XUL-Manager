@@ -1,5 +1,5 @@
 ##
-# Copyright 2010 Jorge Villalobos
+# Copyright 2013 Jorge Villalobos
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -69,6 +69,7 @@ template_files := $(templates_dir)/install.rdf \
 # The sources for the XPI file. Uses variables defined in the included
 # Makefiles.
 xpi_built := install.rdf \
+             bootstrap.js \
              chrome.manifest \
              icon.png \
              $(wildcard content/*.js) \

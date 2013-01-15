@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-  - Copyright 2011 Jorge Villalobos
+  - Copyright 2013 Jorge Villalobos
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
     <em:id>$(ID)@rxm.xulforge.com</em:id>
     <em:name>Remote XUL Installer (generated - $(ID))</em:name>
     <em:description>Automatically installs a set of domains to the Remote XUL whitelist.</em:description>
-    <em:version>1.1.2</em:version>
+    <em:version>1.1.3</em:version>
     <em:creator>Remore XUL Manager Generator</em:creator>
     <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
     <em:bootstrap>true</em:bootstrap>
@@ -33,8 +33,8 @@
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-        <em:minVersion>4.0</em:minVersion>
-        <em:maxVersion>14.*</em:maxVersion>
+        <em:minVersion>10.0</em:minVersion>
+        <em:maxVersion>20.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
@@ -42,8 +42,8 @@
     <em:targetApplication>
       <Description>
         <em:id>{92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a}</em:id>
-        <em:minVersion>2.2</em:minVersion>
-        <em:maxVersion>2.11.*</em:maxVersion>
+        <em:minVersion>2.7</em:minVersion>
+        <em:maxVersion>2.17.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
@@ -51,8 +51,8 @@
     <em:targetApplication>
       <Description>
         <em:id>{a23983c0-fd0e-11dc-95ff-0800200c9a66}</em:id>
-        <em:minVersion>6.0</em:minVersion>
-        <em:maxVersion>14.*</em:maxVersion>
+        <em:minVersion>10.0</em:minVersion>
+        <em:maxVersion>20.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 

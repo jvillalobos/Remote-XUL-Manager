@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jorge Villalobos
+ * Copyright 2013 Jorge Villalobos
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ if ("undefined" == typeof(RXULM)) {
      */
     init : function() {
       // Setup logging. See http://wiki.mozilla.org/Labs/JS_Modules.
-      Components.utils.import("resource://remotexulmanager/log4moz.js");
+      Components.utils.import("chrome://rxm-modules/content/log4moz.js");
 
       // The basic formatter will output lines like:
       // DATE/TIME  LoggerName LEVEL  (log message)
@@ -147,7 +147,7 @@ if ("undefined" == typeof(RXULM)) {
 
       if (null == RXULM.Permissions) {
         Components.utils.import(
-          "resource://remotexulmanager/rxmPermissions.js");
+          "chrome://rxm-modules/content/rxmPermissions.js");
       }
 
       if ((RXULM.Permissions.LOCAL_FILES != aDomain) &&

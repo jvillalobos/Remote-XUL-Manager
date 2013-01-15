@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Jorge Villalobos
+ * Copyright 2013 Jorge Villalobos
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,8 @@ const FILE_TRUNCATE = 0x20;
 // Character used to introduce comments on export files.
 const COMMENT_CHAR = "#"
 
-Components.utils.import("resource://remotexulmanager/rxmCommon.js");
-Components.utils.import("resource://remotexulmanager/rxmPermissions.js");
+Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
+Components.utils.import("chrome://rxm-modules/content/rxmPermissions.js");
 
 RXULM.Export = {
   /* Logger for this object. */

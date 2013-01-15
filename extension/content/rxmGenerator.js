@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Jorge Villalobos
+ * Copyright 2013 Jorge Villalobos
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ const Ci = Components.interfaces;
 
 const INSTALLER_EXTENSION = "xpi";
 
-Components.utils.import("resource://remotexulmanager/rxmCommon.js");
-Components.utils.import("resource://remotexulmanager/rxmGenerator.js");
+Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
+Components.utils.import("chrome://rxm-modules/content/rxmGenerator.js");
 
 /**
  * RXULMChrome namespace.
@@ -114,7 +114,7 @@ RXULMChrome.Generator = {
     if (0 < domains.length) {
       try {
         // only import the script when necessary.
-        Components.utils.import("resource://remotexulmanager/rxmGenerator.js");
+        Components.utils.import("chrome://rxm-modules/content/rxmGenerator.js");
 
         let fp =
           Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
