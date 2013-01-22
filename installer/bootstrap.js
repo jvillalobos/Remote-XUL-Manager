@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Jorge Villalobos
+ * Copyright 2013 Jorge Villalobos
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ function uninstall(aData, aReason) {}
 function shutdown(aData, aReason) {}
 
 function startup(aData, aReason) {
-  RXULMInstaller.init();
+  RXULMInstaller.init(aReason);
 }
 
 var RXULMInstaller = {
@@ -46,34 +46,33 @@ var RXULMInstaller = {
     "insecure and should only be enabled when necessary.",
   WARNING_LOCALIZED : "$(WARNING)",
 
-  /* Permission manager component. */
-  _permissionManager : null,
-  /* IO Service. */
-  _ioService : null,
-  /* Prompt service. */
-  _promptService : null,
-
   /**
    * Initializes the object.
    */
-  init : function() {
-    // Wait 2 seconds for the install UI to show.
-    const RUN_DELAY = 2 * 1000;
-    let timer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-    let that = this;
+  init : function(aReason) {
+    Components.utils.import("resource://gre/modules/Services.jsm");
+    Components.utils.import("resource://gre/modules/AddonManager.jsm");
 
-    this._permissionManager =
-      Cc["@mozilla.org/permissionmanager;1"].
-        getService(Ci.nsIPermissionManager);
-    this._ioService =
-      Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
-    this._promptService =
-      Cc["@mozilla.org/embedcomp/prompt-service;1"].
-        getService(Ci.nsIPromptService);
+    // No windows are opened yet at startup.
+    if (APP_STARTUP == aReason) {
+      let that = this;
+      let observer = {
+          observe : function(aSubject, aTopic, aData) {
+            if ("domwindowopened" == aTopic) {
+              Services.ww.unregisterNotification(observer);
 
-    timer.initWithCallback(
-      { notify : function() { that.run(); } }, RUN_DELAY,
-      Ci.nsITimer.TYPE_ONE_SHOT);
+              let window = aSubject.QueryInterface(Ci.nsIDOMWindow);
+              // wait for the window to load so that the prompt appears on top.
+              window.addEventListener(
+                "load", function() { that.run(); }, false);
+            }
+          }
+        };
+
+      Services.ww.registerNotification(observer);
+    } else {
+      this.run();
+    }
   },
 
   /**
@@ -122,13 +121,10 @@ var RXULMInstaller = {
           aDomain = "http://" + aDomain;
         }
 
-        uri = this._ioService.newURI(aDomain, null, null);
-        this._permissionManager.add(uri, this.ALLOW_REMOTE_XUL, this.ALLOW);
+        uri = Services.io.newURI(aDomain, null, null);
+        Services.perms.add(uri, this.ALLOW_REMOTE_XUL, this.ALLOW);
       } else {
-        let prefService =
-          Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch);
-
-        prefService.setBoolPref(this.LOCAL_FILE_PREF, true);
+        Services.prefs.setBoolPref(this.LOCAL_FILE_PREF, true);
       }
     } catch (e) {
       this._showAlert(
@@ -155,7 +151,7 @@ var RXULMInstaller = {
       content += "\n" + this.DOMAINS[i];
     }
 
-    return this._promptService.confirm(null, title, content);
+    return Services.prompt.confirm(null, title, content);
   },
 
   /**
@@ -166,15 +162,13 @@ var RXULMInstaller = {
     let title =
       ((0 < this.TITLE_LOCALIZED.length) ? this.TITLE_LOCALIZED : this.TITLE);
 
-    this._promptService.alert(null, title, aContent);
+    Services.prompt.alert(null, title, aContent);
   },
 
   /**
    * Uninstall this add-on.
    */
   _suicide : function() {
-    Components.utils.import("resource://gre/modules/AddonManager.jsm");
-
     AddonManager.getAddonByID(
       "$(ID)@rxm.xulforge.com",
       function(aAddon) {

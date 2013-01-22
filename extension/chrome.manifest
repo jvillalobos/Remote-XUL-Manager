@@ -27,7 +27,3 @@ locale    remotexulmanager  fr            locale/fr/
 locale    remotexulmanager  ja-JP         locale/ja-JP/
 locale    remotexulmanager  sv-SE         locale/sv-SE/
 locale    remotexulmanager  zh-CN         locale/zh-CN/
-
-# Mobile Firefox.
-component   {aa76f1c0-a902-4afe-ab37-e51d8c6d2e68}                components/aboutRXM.js                  application={a23983c0-fd0e-11dc-95ff-0800200c9a66}
-contract    @mozilla.org/network/protocol/about;1?what=remotexul  {aa76f1c0-a902-4afe-ab37-e51d8c6d2e68}  application={a23983c0-fd0e-11dc-95ff-0800200c9a66}

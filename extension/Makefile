@@ -72,6 +72,7 @@ xpi_built := install.rdf \
              bootstrap.js \
              chrome.manifest \
              icon.png \
+             icon64.png \
              $(wildcard content/*.js) \
              $(wildcard content/*.xul) \
              $(wildcard content/*.xml) \
@@ -89,6 +90,12 @@ $(xpi_file): $(xpi_built)
 	@echo "Creating XPI file."
 	@$(ZIP) $(xpi_file) $(xpi_built)
 	@echo "Creating XPI file. Done!"
+
+# This builds the extension XPI file and copies it to a mounted Android device.
+.PHONY: android
+android: all
+	@adb push $(xpi_file) /mnt/sdcard/Download
+	@echo "Copied to device."
 
 .PHONY: install
 install: $(xpi_file)

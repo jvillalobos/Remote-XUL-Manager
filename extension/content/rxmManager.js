@@ -17,9 +17,6 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
-Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
-Components.utils.import("chrome://rxm-modules/content/rxmPermissions.js");
-
 /**
  * RXULMChrome namespace.
  */
@@ -34,33 +31,28 @@ RXULMChrome.Manager = {
 
   /* Logger for this object. */
   _logger : null,
-  /* Cached prompt service object. */
-  _promptService : null,
-
-  /**
-   * Lazy getter for the prompt service component.
-   * @return prompt service component.
-   */
-  get promptService() {
-    this._logger.trace("get promptService");
-
-    if (null == this._promptService) {
-      this._promptService =
-        Cc["@mozilla.org/embedcomp/prompt-service;1"].
-          getService(Ci.nsIPromptService);
-    }
-
-    return this._promptService;
-  },
 
   /**
    * Initializes the object.
    */
   init : function() {
+    Components.utils.import("resource://gre/modules/Services.jsm");
+    Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
+    Components.utils.import("chrome://rxm-modules/content/rxmPermissions.js");
+
     this._logger = RXULM.getLogger("RXULMChrome.Manager");
     this._logger.debug("init");
     this._migrateFilePreference();
     this._loadPermissions();
+  },
+
+  /**
+   * Uninitializes the object.
+   */
+  uninit : function() {
+    Components.utils.unload("chrome://rxm-modules/content/rxmPermissions.js");
+    Components.utils.unload("chrome://rxm-modules/content/rxmCommon.js");
+    Components.utils.unload("resource://gre/modules/Services.jsm");
   },
 
   /**
@@ -135,7 +127,7 @@ RXULMChrome.Manager = {
     let promptResponse;
 
     promptResponse =
-      this.promptService.prompt(
+      Services.prompt.prompt(
         window, RXULM.stringBundle.GetStringFromName("rxm.addDomain.title"),
         RXULM.stringBundle.formatStringFromName(
           "rxm.enterDomain.label", [ RXULM.Permissions.LOCAL_FILES ], 1),
@@ -170,7 +162,7 @@ RXULMChrome.Manager = {
     let item;
 
     doRemove =
-      this.promptService.confirm(
+      Services.prompt.confirm(
         window, RXULM.stringBundle.GetStringFromName("rxm.removeDomain.title"),
         message);
 
@@ -326,7 +318,7 @@ RXULMChrome.Manager = {
                 "rxm.import.invalidMany.label", [ failCount ], 1));
           }
 
-          this.promptService.alert(
+          Services.prompt.alert(
             window, RXULM.stringBundle.GetStringFromName("rxm.import.title"),
             message);
         }
@@ -350,11 +342,8 @@ RXULMChrome.Manager = {
   launchGenerator : function(aEvent) {
     this._logger.debug("launchGenerator");
 
-    let windowManager =
-      Cc['@mozilla.org/appshell/window-mediator;1'].
-        getService(Ci.nsIWindowMediator);
     let win =
-      windowManager.getMostRecentWindow("remotexulmanager-generator-dialog");
+      Services.wm.getMostRecentWindow("remotexulmanager-generator-dialog");
 
     // check if a window is already open.
     if ((null != win) && !win.closed) {
@@ -375,7 +364,7 @@ RXULMChrome.Manager = {
   _alert : function(aTitleKey, aContentKey) {
     this._logger.trace("_alert");
 
-    this.promptService.alert(
+    Services.prompt.alert(
       window, RXULM.stringBundle.GetStringFromName(aTitleKey),
       RXULM.stringBundle.GetStringFromName(aContentKey));
   }
@@ -383,3 +372,5 @@ RXULMChrome.Manager = {
 
 window.addEventListener(
   "load", function() { RXULMChrome.Manager.init(); }, false);
+window.addEventListener(
+  "unload", function() { RXULMChrome.Manager.uninit(); }, false);

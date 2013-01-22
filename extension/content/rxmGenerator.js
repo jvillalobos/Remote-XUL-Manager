@@ -19,9 +19,6 @@ const Ci = Components.interfaces;
 
 const INSTALLER_EXTENSION = "xpi";
 
-Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
-Components.utils.import("chrome://rxm-modules/content/rxmGenerator.js");
-
 /**
  * RXULMChrome namespace.
  */
@@ -41,9 +38,22 @@ RXULMChrome.Generator = {
    * Initializes the object.
    */
   init : function() {
+    Components.utils.import("resource://gre/modules/Services.jsm");
+    Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
+    Components.utils.import("chrome://rxm-modules/content/rxmGenerator.js");
+
     this._logger = RXULM.getLogger("RXULMChrome.Generator");
     this._logger.debug("init");
     this._loadPermissions();
+  },
+
+  /**
+   * Uninitializes the object.
+   */
+  uninit : function() {
+    Components.utils.unload("chrome://rxm-modules/content/rxmGenerator.js");
+    Components.utils.unload("chrome://rxm-modules/content/rxmCommon.js");
+    Components.utils.unload("resource://gre/modules/Services.jsm");
   },
 
   /**
@@ -113,9 +123,6 @@ RXULMChrome.Generator = {
 
     if (0 < domains.length) {
       try {
-        // only import the script when necessary.
-        Components.utils.import("chrome://rxm-modules/content/rxmGenerator.js");
-
         let fp =
           Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
         let winResult;
@@ -146,11 +153,7 @@ RXULMChrome.Generator = {
         this._logger.error("generateInstaller\n" + e);
 
         // if an error happens, alert the user.
-        let promptService =
-          Cc["@mozilla.org/embedcomp/prompt-service;1"].
-            getService(Ci.nsIPromptService);
-
-        promptService.alert(
+        Services.prompt.alert(
           window,
           RXULM.stringBundle.GetStringFromName("rxm.generateInstaller.title"),
           RXULM.stringBundle.GetStringFromName("rxm.generateError.label"));
@@ -166,3 +169,5 @@ RXULMChrome.Generator = {
 
 window.addEventListener(
   "load", function() { RXULMChrome.Generator.init(); }, false);
+window.addEventListener(
+  "unload", function() { RXULMChrome.Generator.uninit(); }, false);

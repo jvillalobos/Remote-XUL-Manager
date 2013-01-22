@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Jorge Villalobos
+ * Copyright 2013 Jorge Villalobos
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
+
+var EXPORTED_SYMBOLS = [ "registerAboutPage", "unregisterAboutPage" ];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -49,8 +51,28 @@ AboutRXM.prototype = {
   QueryInterface : XPCOMUtils.generateQI([ Ci.nsIAboutModule ])
 };
 
+var factory;
+
 if (XPCOMUtils.generateNSGetFactory) {
-  var NSGetFactory = XPCOMUtils.generateNSGetFactory([ AboutRXM ]);
-} else {
-  var NSGetModule = XPCOMUtils.generateNSGetModule([ AboutRXM ]);
+  let NSGetFactory = XPCOMUtils.generateNSGetFactory([ AboutRXM ]);
+
+  factory = NSGetFactory(AboutRXM.prototype.classID);
+}
+
+function registerAboutPage() {
+  let compMan = Components.manager.QueryInterface(Ci.nsIComponentRegistrar);
+
+  if (!compMan.isCIDRegistered(AboutRXM.prototype.classID)) {
+    compMan.registerFactory(
+      AboutRXM.prototype.classID, AboutRXM.prototype.classDescription,
+      AboutRXM.prototype.contractID, factory);
+  }
+}
+
+function unregisterAboutPage() {
+  let compMan = Components.manager.QueryInterface(Ci.nsIComponentRegistrar);
+
+  if (compMan.isCIDRegistered(AboutRXM.prototype.classID)) {
+    compMan.unregisterFactory(AboutRXM.prototype.classID, factory);
+  }
 }

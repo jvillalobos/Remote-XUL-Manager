@@ -31,15 +31,12 @@ const SQL_DELETE =
   "DELETE FROM moz_hosts WHERE host='<file>' AND type='" + ALLOW_REMOTE_XUL +
   "'";
 
+Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
 
 RXULM.Permissions = {
   /* Logger for this object. */
   _logger : null,
-  /* Permission manager component. */
-  _permissionManager : null,
-  /* IO Service. */
-  _ioService : null,
 
   /* "Domain" identifier for all local files. */
   get LOCAL_FILES() { return "<file>"; },
@@ -50,12 +47,6 @@ RXULM.Permissions = {
   init : function() {
     this._logger = RXULM.getLogger("RXULM.Permissions");
     this._logger.debug("init");
-
-    this._permissionManager =
-      Cc["@mozilla.org/permissionmanager;1"].
-        getService(Ci.nsIPermissionManager);
-    this._ioService =
-      Cc["@mozilla.org/network/io-service;1"].getService(Ci.nsIIOService);
   },
 
   /**
@@ -69,11 +60,11 @@ RXULM.Permissions = {
     let permission;
 
     try  {
-      let enumerator = this._permissionManager.enumerator;
+      let enumerator = Services.perms.enumerator;
       let allowLocalFiles = false;
 
       try {
-        allowLocalFiles = RXULM.prefService.getBoolPref(LOCAL_FILE_PREF);
+        allowLocalFiles = Services.prefs.getBoolPref(LOCAL_FILE_PREF);
       } catch (e) {
         this._logger.info("getAll. No value for local files pref.");
       }
@@ -111,9 +102,9 @@ RXULM.Permissions = {
       if (this.LOCAL_FILES != aDomain) {
         let uri = this._getURI(aDomain);
 
-        this._permissionManager.add(uri, ALLOW_REMOTE_XUL, ALLOW);
+        Services.perms.add(uri, ALLOW_REMOTE_XUL, ALLOW);
       } else {
-        RXULM.prefService.setBoolPref(LOCAL_FILE_PREF, true);
+        Services.prefs.setBoolPref(LOCAL_FILE_PREF, true);
       }
 
       success = true;
@@ -136,9 +127,9 @@ RXULM.Permissions = {
 
     try {
       if (this.LOCAL_FILES != aDomain) {
-        this._permissionManager.remove(aDomain, ALLOW_REMOTE_XUL);
+        Services.perms.remove(aDomain, ALLOW_REMOTE_XUL);
       } else {
-        RXULM.prefService.setBoolPref(LOCAL_FILE_PREF, false);
+        Services.prefs.setBoolPref(LOCAL_FILE_PREF, false);
       }
 
       success = true;
@@ -157,7 +148,7 @@ RXULM.Permissions = {
   _getURI : function(aDomainString) {
     this._logger.trace("_getURI");
 
-    return this._ioService.newURI(aDomainString, null, null);
+    return Services.io.newURI(aDomainString, null, null);
   },
 
   /**
@@ -198,13 +189,11 @@ RXULM.Permissions = {
 
     let dirService =
       Cc["@mozilla.org/file/directory_service;1"].getService(Ci.nsIProperties);
-    let storageService =
-      Cc["@mozilla.org/storage/service;1"].getService(Ci.mozIStorageService);
     let dbFile = dirService.get("ProfD", Ci.nsIFile);
 
     dbFile.append("permissions.sqlite");
 
-    return storageService.openDatabase(dbFile);
+    return Services.storage.openDatabase(dbFile);
   }
 };
 

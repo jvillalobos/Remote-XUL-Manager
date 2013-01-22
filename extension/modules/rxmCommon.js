@@ -19,13 +19,17 @@ var EXPORTED_SYMBOLS = [ "RXULM" ];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 
+const FIREFOX_MOBILE_ID = "{a23983c0-fd0e-11dc-95ff-0800200c9a66}";
+const FIREFOX_ANDROID_ID = "{aa3c5121-dab2-40e2-81ca-7ea25febc110}";
+
+Components.utils.import("resource://gre/modules/Services.jsm");
+Components.utils.import("chrome://rxm-modules/content/log4moz.js");
+
 /**
  * RXULM namespace.
  */
 if ("undefined" == typeof(RXULM)) {
   var RXULM = {
-    /* The preferences service. */
-    _prefService : null,
     /* Array of timer references, keeps timeouts alive. */
     _timers : [],
 
@@ -34,33 +38,32 @@ if ("undefined" == typeof(RXULM)) {
      */
     init : function() {
       // Setup logging. See http://wiki.mozilla.org/Labs/JS_Modules.
-      Components.utils.import("chrome://rxm-modules/content/log4moz.js");
-
       // The basic formatter will output lines like:
       // DATE/TIME  LoggerName LEVEL  (log message)
       let formatter = new Log4Moz.BasicFormatter();
       let root = Log4Moz.repository.rootLogger;
-      let logFile = this.getRXMDirectory();
-      let app;
+      let appender;
 
-      logFile.append("log.txt");
+      if (!this.isMobile()) {
+        let logFile = this.getRXMDirectory();
 
-      // Loggers are hierarchical, lowering this log level will affect all
-      // output.
+        logFile.append("log.txt");
+        // this appender will log to the file system.
+        appender = new Log4Moz.RotatingFileAppender(logFile, formatter);
+      } else {
+        appender = new Log4Moz.ConsoleAppender(formatter);
+      }
+
       root.level = Log4Moz.Level["All"];
-
-      // this appender will log to the file system.
-      app = new Log4Moz.RotatingFileAppender(logFile, formatter);
-      app.level = Log4Moz.Level["Warn"]; // change this line to adjust level.
-      root.addAppender(app);
+      appender.level = Log4Moz.Level["Warn"]; // change this to adjust level.
+      root.addAppender(appender);
 
       // get a Logger specifically for this object.
-      this._logger = this.getLogger("RXM");
+      this._logger = this.getLogger("RXULM");
 
       this.stringBundle =
-        Cc["@mozilla.org/intl/stringbundle;1"].
-          getService(Ci.nsIStringBundleService).
-            createBundle("chrome://remotexulmanager/locale/rxm.properties");
+        Services.strings.createBundle(
+          "chrome://remotexulmanager/locale/rxm.properties");
     },
 
     /**
@@ -78,39 +81,33 @@ if ("undefined" == typeof(RXULM)) {
     },
 
     /**
+     * Indicates if this is a mobile version of Firefox.
+     * @return true if this is Firefox Mobile (XUL) or Firefox for Android.
+     */
+    isMobile : function() {
+      let isMobileApp =
+        (FIREFOX_ANDROID_ID == Services.appinfo.ID) ||
+        (FIREFOX_MOBILE_ID == Services.appinfo.ID);
+
+      return isMobileApp;
+    },
+
+    /**
      * Gets a reference to the directory where this add-on will keep its files.
      * The directory is created if it doesn't exist.
      * @return reference (nsIFile) to the directory.
      */
     getRXMDirectory : function() {
-      // XXX: there's no logging here because the logger initialization depends
-      // on this method.
+      Components.utils.import("resource://gre/modules/FileUtils.jsm");
 
-      let directoryService =
-        Cc["@mozilla.org/file/directory_service;1"].
-          getService(Ci.nsIProperties);
-      let targetDir = directoryService.get("ProfD", Ci.nsIFile);
-
-      targetDir.append("RemoteXULManager");
-
-      if (!targetDir.exists() || !targetDir.isDirectory()) {
-        // read and write permissions to owner and group, read-only for others.
-        targetDir.create(Ci.nsIFile.DIRECTORY_TYPE, 0774);
-      }
-
-      return targetDir;
+      return FileUtils.getDir("ProfD", [ "RemoteXULManager" ], true);
     },
 
     /**
      * Gets the preferences service.
      */
     get prefService() {
-      if (null == this._prefService) {
-        this._prefService =
-          Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefBranch);
-      }
-
-      return this._prefService;
+      Services.prefs;
     },
 
     /**
