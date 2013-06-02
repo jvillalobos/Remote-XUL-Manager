@@ -35,7 +35,7 @@ var RXULMInstaller = {
   LOCAL_FILE_PREF : "dom.allow_XUL_XBL_for_file",
 
   // The list of domains to include on the whitelist.
-  DOMAINS : [ $(DOMAINS) ],
+  PERMISSIONS : [ $(PERMISSIONS) ],
   // Title for dialogs and optional, localized version of the message.
   TITLE : "Remote XUL Manager",
   TITLE_LOCALIZED : "$(TITLE)",
@@ -83,7 +83,7 @@ var RXULMInstaller = {
     try {
       let permCount = this.PERMISSIONS.length;
       let hasLocalFiles = false;
-      let permission;
+      let domain;
 
       if ((0 < permCount) &&
           (this.SILENT_INSTALL || this._showWarningMessage())) {

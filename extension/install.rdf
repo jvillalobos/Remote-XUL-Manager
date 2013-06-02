@@ -26,6 +26,7 @@
     <em:version>1.2</em:version>
     <em:creator>Jorge Villalobos</em:creator>
     <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
+    <em:optionsURL>chrome://remotexulmanager/content/rxmManager.xul</em:optionsURL>
     <em:bootstrap>true</em:bootstrap>
     <em:type>2</em:type>
 

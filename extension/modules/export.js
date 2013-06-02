@@ -108,7 +108,7 @@ XFPerms.Export = {
     let result =
       {
         success : false,
-        domains : [],
+        permissions : [],
         invalids : []
       };
     let line = {};
@@ -137,7 +137,7 @@ XFPerms.Export = {
 
           // insert into the right array once we've tried to add it.
           if (addResult) {
-            result.domains.push(domain);
+            result.permissions.push(domain);
           } else {
             result.invalids.push(domain);
           }

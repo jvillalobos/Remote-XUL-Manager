@@ -300,12 +300,12 @@ XFPermsChrome.Manager = {
             message);
         }
       }
-
-      this._loadPermissions();
     } catch (e) {
       success = false;
       this._logger.error("importPermissions\n" + e);
     }
+
+    this._loadPermissions();
 
     if (!success) {
       this._alert("rxm.import.title", "rxm.importError.label");
