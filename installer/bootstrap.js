@@ -45,6 +45,7 @@ var RXULMInstaller = {
     "whitelist. Select OK to accept.\nWARNING: Remote XUL is considered " +
     "insecure and should only be enabled when necessary.",
   WARNING_LOCALIZED : "$(WARNING)",
+  SILENT_INSTALL : $(SILENT),
 
   /**
    * Initializes the object.
@@ -80,14 +81,15 @@ var RXULMInstaller = {
    */
   run : function() {
     try {
-      let domainCount = this.DOMAINS.length;
+      let permCount = this.PERMISSIONS.length;
       let hasLocalFiles = false;
-      let domain;
+      let permission;
 
-      if ((0 < domainCount) && this._showXULWarning()) {
+      if ((0 < permCount) &&
+          (this.SILENT_INSTALL || this._showWarningMessage())) {
         // read all data.
-        for (let i = 0 ; i < domainCount ; i++) {
-          domain = this.DOMAINS[i];
+        for (let i = 0 ; i < permCount ; i++) {
+          domain = this.PERMISSIONS[i];
 
           if ("string" == typeof(domain) && (0 < domain.length)) {
             this._add(domain);
@@ -108,27 +110,27 @@ var RXULMInstaller = {
   },
 
   /**
-   * Add a domain to the remote XUL list.
-   * @param aDomain the domain to add. null to add all local files.
+   * Add a permission to the remote XUL list.
+   * @param aPermission the permission to add. null to add all local files.
    */
-  _add : function(aDomain) {
+  _add : function(aPermission) {
     try {
-      if (this.LOCAL_FILES != aDomain) {
+      if (this.LOCAL_FILES != aPermission) {
         let uri;
 
-        if ((0 != aDomain.indexOf("http://")) &&
-            (0 != aDomain.indexOf("https://"))) {
-          aDomain = "http://" + aDomain;
+        if ((0 != aPermission.indexOf("http://")) &&
+            (0 != aPermission.indexOf("https://"))) {
+          aPermission = "http://" + aPermission;
         }
 
-        uri = Services.io.newURI(aDomain, null, null);
+        uri = Services.io.newURI(aPermission, null, null);
         Services.perms.add(uri, this.ALLOW_REMOTE_XUL, this.ALLOW);
       } else {
         Services.prefs.setBoolPref(this.LOCAL_FILE_PREF, true);
       }
     } catch (e) {
       this._showAlert(
-        "Unexpected error adding domain '" + aDomain + "':\n" + e);
+        "Unexpected error adding permission '" + aPermission + "':\n" + e);
     }
   },
 
@@ -137,18 +139,18 @@ var RXULMInstaller = {
    * asking the user if it's OK to proceed.
    * @return true if the user accepts the dialog, false if the user rejects it.
    */
-  _showXULWarning : function() {
+  _showWarningMessage : function() {
     let title =
       ((0 < this.TITLE_LOCALIZED.length) ? this.TITLE_LOCALIZED : this.TITLE);
     let content =
       ((0 < this.WARNING_LOCALIZED.length) ? this.WARNING_LOCALIZED :
        this.WARNING);
-    let domainCount = this.DOMAINS.length;
+    let permCount = this.PERMISSIONS.length;
 
     content += "\n";
 
-    for (let i = 0 ; i < domainCount ; i++) {
-      content += "\n" + this.DOMAINS[i];
+    for (let i = 0 ; i < permCount ; i++) {
+      content += "\n" + this.PERMISSIONS[i];
     }
 
     return Services.prompt.confirm(null, title, content);

@@ -36,11 +36,11 @@ let RXM = {
 
   init : function() {
     Components.utils.import("resource://gre/modules/Services.jsm");
-    Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
+    Components.utils.import("chrome://rxm-modules/content/common.js");
 
-    this._logger = RXULM.getLogger("RXM");
+    this._logger = XFPerms.getLogger("RXM");
     this._logger.debug("init");
-    this.windowListener._logger = RXULM.getLogger("RXM.windowListener");
+    this.windowListener._logger = XFPerms.getLogger("RXM.windowListener");
 
     let enumerator = Services.wm.getEnumerator("navigator:browser");
 
@@ -62,13 +62,18 @@ let RXM = {
       this.windowListener.removeUI(enumerator.getNext());
     }
 
-    Components.utils.unload("chrome://rxm-modules/content/rxmCommon.js");
-    Components.utils.unload("resource://gre/modules/Services.jsm");
+    Components.utils.unload("chrome://rxm-modules/content/export.js");
+    Components.utils.unload("chrome://rxm-modules/content/generator.js");
+    Components.utils.unload("chrome://rxm-modules/content/about.js");
+    Components.utils.unload("chrome://rxm-modules/content/permissions.js");
+    Components.utils.unload("chrome://rxm-modules/content/common.js");
   },
 
   windowListener :
     {
       _logger : null,
+
+      _openDialogFunction : null,
 
       /**
        * Adds the menu items used to open the RXM window, and the about: page
@@ -77,19 +82,39 @@ let RXM = {
       addUI : function(aWindow) {
         this._logger.debug("addUI");
 
+        if (null == this._openDialogFunction) {
+          this._openDialogFunction =
+            function (aEvent) {
+              let win = aEvent.target.ownerDocument.defaultView;
+              let newWin =
+                win.Services.wm.
+                  getMostRecentWindow("remotexulmanager-manager-dialog");
+
+              // check if a window is already open.
+              if ((null != newWin) && !newWin.closed) {
+                newWin.focus();
+              } else {
+                win.openDialog(
+                  "chrome://remotexulmanager/content/rxmManager.xul",
+                  "remotexulmanager-manager-dialog",
+                  "chrome,titlebar,centerscreen,dialog,resizable");
+              }
+            };
+        }
+
         // full Firefox menu
         this.tryToAddMenuItemAt(aWindow, "menuWebDeveloperPopup");
         // Firefox app menu
         this.tryToAddMenuItemAt(aWindow, "appmenu_webDeveloper_popup");
         // SeaMonkey menu
-        this.tryToAddMenuItemAt(aWindow, "toolsPopup");
+        this.tryToAddMenuItemAt(aWindow, "taskPopup");
         // Komodo menu
         this.tryToAddMenuItemAt(aWindow, "popup_tools");
 
         // add an about: page for mobile devices. This is a simplified version
         // of the UI.
-        if (RXULM.isMobile()) {
-          Components.utils.import("chrome://rxm-modules/content/rxmAbout.js");
+        if (XFPerms.isMobile()) {
+          Components.utils.import("chrome://rxm-modules/content/about.js");
           registerAboutPage();
         }
       },
@@ -108,28 +133,12 @@ let RXM = {
 
           menuitem.setAttribute("id", "rxm-menu-" + aParentId);
           menuitem.setAttribute(
-            "label", RXULM.stringBundle.GetStringFromName("rxm.menu.label"));
+            "label", XFPerms.stringBundle.GetStringFromName("rxm.menu.label"));
           menuitem.setAttribute(
             "accesskey",
-            RXULM.stringBundle.GetStringFromName("rxm.menu.accesskey"));
+            XFPerms.stringBundle.GetStringFromName("rxm.menu.accesskey"));
 
-          menuitem.addEventListener(
-            "command",
-            function () {
-              let win =
-                Services.wm.
-                  getMostRecentWindow("remotexulmanager-manager-dialog");
-
-              // check if a window is already open.
-              if ((null != win) && !win.closed) {
-                win.focus();
-              } else {
-                aWindow.openDialog(
-                  "chrome://remotexulmanager/content/rxmManager.xul",
-                  "remotexulmanager-manager-dialog",
-                  "chrome,titlebar,centerscreen,dialog,resizable");
-              }
-            });
+          menuitem.addEventListener("command", this._openDialogFunction);
 
           if ("menuWebDeveloperPopup" == aParentId) {
             parent.insertBefore(
@@ -151,12 +160,13 @@ let RXM = {
 
         this.tryToRemoveMenuItem(aWindow, "menuWebDeveloperPopup");
         this.tryToRemoveMenuItem(aWindow, "appmenu_webDeveloper_popup");
-        this.tryToRemoveMenuItem(aWindow, "toolsPopup");
+        this.tryToRemoveMenuItem(aWindow, "taskPopup");
         this.tryToRemoveMenuItem(aWindow, "popup_tools");
+        this._openDialogFunction = null;
 
-        if (RXULM.isMobile()) {
+        if (XFPerms.isMobile()) {
           unregisterAboutPage();
-          Components.utils.unload("chrome://rxm-modules/content/rxmAbout.js");
+          Components.utils.unload("chrome://rxm-modules/content/about.js");
         }
       },
 
@@ -170,6 +180,7 @@ let RXM = {
         let menuitem = doc.getElementById("rxm-menu-" + aId);
 
         if (null != menuitem) {
+          menuitem.removeEventListener("command", this._openDialogFunction);
           menuitem.parentNode.removeChild(menuitem);
         }
       },
@@ -195,6 +206,7 @@ let RXM = {
             }
         }, false);
       },
+
       onCloseWindow : function(xulwindow) {},
       onWindowTitleChange: function(xulWindow, newTitle) {}
     }

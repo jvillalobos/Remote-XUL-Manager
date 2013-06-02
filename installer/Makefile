@@ -1,5 +1,5 @@
 ##
-# Copyright 2011 Jorge Villalobos
+# Copyright 2013 Jorge Villalobos
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +14,13 @@
 # limitations under the License.
 ##
 
+include config.mk
+
 # The name of the extension.
-extension_name := remotexulinstaller
+extension_name ?= remotexulinstaller
 
 # First part of the add-on id. Generated to avoid conflicts.
-id := $(shell uuidgen)
+id ?= $(shell uuidgen)
 
 # The zip application to be used.
 ZIP := zip
@@ -58,14 +60,13 @@ $(xpi_file): $(build_dir) $(xpi_built)
 	@cd $(build_dir); $(ZIP) ../$(xpi_file) $(xpi_built_no_dir)
 	@echo "Creating XPI file. Done!"
 
-include config.mk
-
-$(build_dir)/%: %
+$(build_dir)/%: % config.mk
 	@sed -E \
     -e 's/\$$\(ID\)/$(id)/g' \
-    -e 's/\$$\(DOMAINS\)/$(domains)/g' \
+    -e 's/\$$\(PERMISSIONS\)/$(permissions)/g' \
     -e 's/\$$\(TITLE\)/$(title_localized)/g' \
     -e 's/\$$\(WARNING\)/$(warning_localized)/g' \
+    -e 's/\$$\(SILENT\)/$(silent)/g' \
     $< > $@
 
 $(build_dir):

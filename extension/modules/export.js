@@ -30,10 +30,10 @@ const FILE_TRUNCATE = 0x20;
 // Character used to introduce comments on export files.
 const COMMENT_CHAR = "#"
 
-Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
-Components.utils.import("chrome://rxm-modules/content/rxmPermissions.js");
+Components.utils.import("chrome://rxm-modules/content/common.js");
+Components.utils.import("chrome://rxm-modules/content/permissions.js");
 
-RXULM.Export = {
+XFPerms.Export = {
   /* Logger for this object. */
   _logger : null,
 
@@ -48,24 +48,24 @@ RXULM.Export = {
    * Initializes the object.
    */
   init : function() {
-    this._logger = RXULM.getLogger("RXULM.Export");
+    this._logger = XFPerms.getLogger("XFPerms.Export");
     this._logger.debug("init");
   },
 
   /**
-   * Exports the list of given domains to the selected file. All existing data
-   * in the file will be deleted.
-   * @param aDomains array of domains to export.
+   * Exports the list of given permissions to the selected file. All existing
+   * data in the file will be deleted.
+   * @param aPermissions array of permissions to export.
    * @param aFile the file to export the domains to.
    * @return true if the operation was successful, false otherwise.
    */
-  exportDomains : function(aDomains, aFile) {
-    this._logger.debug("exportDomains");
+  exportPermissions : function(aPermissions, aFile) {
+    this._logger.debug("exportPermissions");
 
     let stream =
       Cc["@mozilla.org/network/file-output-stream;1"].
         createInstance(Ci.nsIFileOutputStream);
-    let count = aDomains.length;
+    let count = aPermissions.length;
     let result = false;
     let line;
 
@@ -76,7 +76,7 @@ RXULM.Export = {
 
       // write all data.
       for (let i = 0; i < count; i++) {
-        line = aDomains[i] + "\n";
+        line = aPermissions[i] + "\n";
         stream.write(line, line.length);
       }
 
@@ -85,22 +85,22 @@ RXULM.Export = {
       stream = null;
       result = true;
     } catch (e) {
-      this._logger.error("exportDomains\n" + e);
+      this._logger.error("exportPermissions\n" + e);
     }
 
     return result;
   },
 
   /**
-   * Imports a list of domains from the selected file. Domains are checked for
-   * validity.
-   * @param aFile the file to import the domains from.
+   * Imports a list of permissions from the selected file. Domains are checked
+   * for validity.
+   * @param aFile the file to import the permissions from.
    * @return an object with the result (.result) of the import (one of the
    * RESULT_ flags in the Permissions object), a list of valid domains
    * (.domains) and the list of invalid domains (.invalids).
    */
-  importDomains : function(aFile) {
-    this._logger.debug("importDomains");
+  importPermissions : function(aFile) {
+    this._logger.debug("importPermissions");
 
     let stream =
       Cc["@mozilla.org/network/file-input-stream;1"].
@@ -133,7 +133,7 @@ RXULM.Export = {
           // in case we need to include more data in the future, we'll use
           // commas as separators.
           domain = lineText.split(",")[0];
-          addResult = RXULM.Permissions.add(RXULM.addProtocol(domain));
+          addResult = XFPerms.Permissions.add(XFPerms.addProtocol(domain));
 
           // insert into the right array once we've tried to add it.
           if (addResult) {
@@ -147,7 +147,7 @@ RXULM.Export = {
 
       result.success = true;
     } catch (e) {
-      this._logger.error("importDomains\n" + e);
+      this._logger.error("importPermissions\n" + e);
     }
 
     // close the stream.
@@ -163,4 +163,4 @@ RXULM.Export = {
  */
 (function() {
   this.init();
-}).apply(RXULM.Export);
+}).apply(XFPerms.Export);

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-  - Copyright 2011 Jorge Villalobos
+  - Copyright 2013 Jorge Villalobos
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -33,14 +33,14 @@
   <vbox id="window-content" flex="1">
     <label control="domains" value="&remotexulmanager.allowed.label;" />
     <listbox id="domains" rows="15" seltype="multiple"
-      onselect="RXULMChrome.Manager.select(event);" />
+      onselect="XFPermsChrome.Manager.select(event);" />
     <button id="add" label="&remotexulmanager.add.label;"
       accesskey="&remotexulmanager.add.accesskey;"
-      oncommand="RXULMChrome.Manager.add(event);" />
+      oncommand="XFPermsChrome.Manager.add(event);" />
     <button id="remove" disabled="true"
       label="&remotexulmanager.remove.label;"
       accesskey="&remotexulmanager.remove.accesskey;"
-      oncommand="RXULMChrome.Manager.remove(event);" />
+      oncommand="XFPermsChrome.Manager.remove(event);" />
   </vbox>
 
 </window>

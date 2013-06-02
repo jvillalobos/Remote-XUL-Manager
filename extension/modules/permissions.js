@@ -23,18 +23,10 @@ const ALLOW_REMOTE_XUL = "allowXULXBL";
 const ALLOW = 1;
 const LOCAL_FILE_PREF = "dom.allow_XUL_XBL_for_file";
 
-// SQL statements for the permissions DB.
-const SQL_SELECT =
-  "SELECT * FROM moz_hosts WHERE host='<file>' AND type='" + ALLOW_REMOTE_XUL +
-  "'";
-const SQL_DELETE =
-  "DELETE FROM moz_hosts WHERE host='<file>' AND type='" + ALLOW_REMOTE_XUL +
-  "'";
-
 Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
+Components.utils.import("chrome://rxm-modules/content/common.js");
 
-RXULM.Permissions = {
+XFPerms.Permissions = {
   /* Logger for this object. */
   _logger : null,
 
@@ -45,7 +37,7 @@ RXULM.Permissions = {
    * Initializes the object.
    */
   init : function() {
-    this._logger = RXULM.getLogger("RXULM.Permissions");
+    this._logger = XFPerms.getLogger("XFPerms.Permissions");
     this._logger.debug("init");
   },
 
@@ -149,51 +141,6 @@ RXULM.Permissions = {
     this._logger.trace("_getURI");
 
     return Services.io.newURI(aDomainString, null, null);
-  },
-
-  /**
-   * Indicates if there's a local file permission stored in the DB.
-   * @return true if there's a local file permission in the DB. false otherwise.
-   */
-  hasLocalFileDB : function() {
-    this._logger.debug("hasLocalFileDB");
-
-    let connection = this._getDBConnection();
-    let statement = connection.createStatement(SQL_SELECT);
-    let result = statement.executeStep();
-
-    statement.finalize();
-    connection.close();
-
-    return result;
-  },
-
-  /**
-   * Deletes the local file permission entry from the DB.
-   */
-  deleteLocalFileDB : function() {
-    this._logger.debug("deleteLocalFileDB");
-
-    let connection = this._getDBConnection();
-
-    connection.executeSimpleSQL(SQL_DELETE);
-    connection.close();
-  },
-
-  /**
-   * Returns a connection to the permissions database.
-   * @return connection to the permissions database.
-   */
-  _getDBConnection : function() {
-    this._logger.trace("_getDBConnection");
-
-    let dirService =
-      Cc["@mozilla.org/file/directory_service;1"].getService(Ci.nsIProperties);
-    let dbFile = dirService.get("ProfD", Ci.nsIFile);
-
-    dbFile.append("permissions.sqlite");
-
-    return Services.storage.openDatabase(dbFile);
   }
 };
 
@@ -202,4 +149,4 @@ RXULM.Permissions = {
  */
 (function() {
   this.init();
-}).apply(RXULM.Permissions);
+}).apply(XFPerms.Permissions);

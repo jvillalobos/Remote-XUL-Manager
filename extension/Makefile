@@ -84,7 +84,6 @@ xpi_built := install.rdf \
              $(wildcard modules/*.js) \
              $(wildcard components/*.js) \
              $(template_files) \
-#             defaults/preferences/$(extension_name).js
 
 $(xpi_file): $(xpi_built)
 	@echo "Creating XPI file."

@@ -18,16 +18,16 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 
 /**
- * RXULMChrome namespace.
+ * XFPermsChrome namespace.
  */
-if ("undefined" == typeof(RXULMChrome)) {
-  var RXULMChrome = {};
+if ("undefined" == typeof(XFPermsChrome)) {
+  var XFPermsChrome = {};
 };
 
 /**
- * Remote XUL Manager dialog controller.
+ * Manager dialog controller.
  */
-RXULMChrome.Manager = {
+XFPermsChrome.Manager = {
 
   /* Logger for this object. */
   _logger : null,
@@ -37,12 +37,11 @@ RXULMChrome.Manager = {
    */
   init : function() {
     Components.utils.import("resource://gre/modules/Services.jsm");
-    Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
-    Components.utils.import("chrome://rxm-modules/content/rxmPermissions.js");
+    Components.utils.import("chrome://rxm-modules/content/common.js");
+    Components.utils.import("chrome://rxm-modules/content/permissions.js");
 
-    this._logger = RXULM.getLogger("RXULMChrome.Manager");
+    this._logger = XFPerms.getLogger("XFPermsChrome.Manager");
     this._logger.debug("init");
-    this._migrateFilePreference();
     this._loadPermissions();
   },
 
@@ -50,9 +49,6 @@ RXULMChrome.Manager = {
    * Uninitializes the object.
    */
   uninit : function() {
-    Components.utils.unload("chrome://rxm-modules/content/rxmPermissions.js");
-    Components.utils.unload("chrome://rxm-modules/content/rxmCommon.js");
-    Components.utils.unload("resource://gre/modules/Services.jsm");
   },
 
   /**
@@ -62,33 +58,33 @@ RXULMChrome.Manager = {
     this._logger.trace("_loadPermissions");
 
     try {
-      let domains = document.getElementById("domains");
+      let permissions = document.getElementById("domains");
       let generateItem = document.getElementById("generate-menuitem");
-      let allowed = RXULM.Permissions.getAll();
+      let allowed = XFPerms.Permissions.getAll();
       let allowedCount = allowed.length;
       let item;
 
       // clear the current list.
-      while (null != domains.firstChild) {
-        domains.removeChild(domains.firstChild);
+      while (null != permissions.firstChild) {
+        permissions.removeChild(permissions.firstChild);
       }
 
       for (let i = 0; i < allowedCount; i++) {
         item = document.createElement("listitem");
 
-        if (RXULM.Permissions.LOCAL_FILES != allowed[i]) {
+        if (XFPerms.Permissions.LOCAL_FILES != allowed[i]) {
           item.setAttribute("label", allowed[i]);
           item.setAttribute("value", allowed[i]);
         } else {
           item.setAttribute(
-            "label", RXULM.stringBundle.GetStringFromName("rxm.file.label"));
-          item.setAttribute("value", RXULM.Permissions.LOCAL_FILES);
+            "label", XFPerms.stringBundle.GetStringFromName("rxm.file.label"));
+          item.setAttribute("value", XFPerms.Permissions.LOCAL_FILES);
         }
 
-        domains.appendChild(item);
+        permissions.appendChild(item);
       }
 
-      // null in the about:remotexul window.
+      // null in the about: window.
       if (null != generateItem) {
         generateItem.disabled = (0 == allowedCount);
       }
@@ -98,26 +94,7 @@ RXULMChrome.Manager = {
   },
 
   /**
-   * Migrate from using the DB entry for the local files permission and use the
-   * more convenient preference instead.
-   */
-  _migrateFilePreference : function() {
-    this._logger.trace("_migrateFilePreference");
-
-    try {
-      // check if we have the local file entry in the DB.
-      if (RXULM.Permissions.hasLocalFileDB()) {
-        // switch to the preference if that's the case.
-        RXULM.Permissions.add(RXULM.Permissions.LOCAL_FILES);
-        RXULM.Permissions.deleteLocalFileDB();
-      }
-    } catch (e) {
-      this._logger.error("_migrateFilePreference\n" + e);
-    }
-  },
-
-  /**
-   * Adds a new domain to the list.
+   * Adds a new permission to the list.
    * @param aEvent the event that triggered this action.
    */
   add : function(aEvent) {
@@ -128,13 +105,13 @@ RXULMChrome.Manager = {
 
     promptResponse =
       Services.prompt.prompt(
-        window, RXULM.stringBundle.GetStringFromName("rxm.addDomain.title"),
-        RXULM.stringBundle.formatStringFromName(
-          "rxm.enterDomain.label", [ RXULM.Permissions.LOCAL_FILES ], 1),
+        window, XFPerms.stringBundle.GetStringFromName("rxm.addDomain.title"),
+        XFPerms.stringBundle.formatStringFromName(
+          "rxm.enterDomain.label", [ XFPerms.Permissions.LOCAL_FILES ], 1),
         domain, null, { value : false });
 
     if (promptResponse) {
-      let success = RXULM.Permissions.add(RXULM.addProtocol(domain.value));
+      let success = XFPerms.Permissions.add(XFPerms.addProtocol(domain.value));
 
       if (success) {
         this._loadPermissions();
@@ -145,7 +122,7 @@ RXULMChrome.Manager = {
   },
 
   /**
-   * Removes the selected domains from the list.
+   * Removes the selected permissions from the list.
    * @param aEvent the event that triggered this action.
    */
   remove : function(aEvent) {
@@ -155,22 +132,22 @@ RXULMChrome.Manager = {
     let count = selected.length;
     let message =
       ((1 == count) ?
-       RXULM.stringBundle.GetStringFromName("rxm.removeOne.label") :
-       RXULM.stringBundle.formatStringFromName(
+       XFPerms.stringBundle.GetStringFromName("rxm.removeOne.label") :
+       XFPerms.stringBundle.formatStringFromName(
         "rxm.removeMany.label", [ count ], 1));
     let doRemove;
     let item;
 
     doRemove =
       Services.prompt.confirm(
-        window, RXULM.stringBundle.GetStringFromName("rxm.removeDomain.title"),
+        window, XFPerms.stringBundle.GetStringFromName("rxm.removeDomain.title"),
         message);
 
     if (doRemove) {
       try {
         for (let i = 0; i < count; i ++) {
           item = selected[i];
-          RXULM.Permissions.remove(item.getAttribute("value"));
+          XFPerms.Permissions.remove(item.getAttribute("value"));
         }
       } catch (e) {
         this._logger.debug("remove\n" + e);
@@ -194,7 +171,7 @@ RXULMChrome.Manager = {
 
     removeButton.disabled = (0 == listbox.selectedCount);
 
-    // null in the about:remotexul window.
+    // null in the about: window.
     if (null != exportMenu) {
       exportMenu.disabled = (0 == listbox.selectedCount);
     }
@@ -202,42 +179,42 @@ RXULMChrome.Manager = {
 
   /**
    * Displays a file selection dialog to choose the file to export to. If
-   * chosen, the selected domains will be exported to that file.
+   * chosen, the selected permissions will be exported to that file.
    */
-  exportDomains : function(aEvent) {
-    this._logger.debug("exportDomains");
+  exportPermissions : function(aEvent) {
+    this._logger.debug("exportPermissions");
 
     let selected = document.getElementById("domains").selectedItems;
     let count = selected.length;
-    let domains = [];
+    let permissions = [];
     let domain;
 
     try {
       for (let i = 0; i < count; i ++) {
         domain = selected[i].getAttribute("value");
-        domains.push(RXULM.addProtocol(domain));
+        permissions.push(XFPerms.addProtocol(domain));
       }
     } catch (e) {
-      this._logger.error("exportDomains\n" + e);
+      this._logger.error("exportPermissions\n" + e);
     }
 
-    if (0 < domains.length) {
+    if (0 < permissions.length) {
       let success = true;
 
       try {
         // only import the script when necessary.
-        Components.utils.import("chrome://rxm-modules/content/rxmExport.js");
+        Components.utils.import("chrome://rxm-modules/content/export.js");
 
         let fp =
           Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
         let winResult;
 
         // set up the dialog.
-        fp.defaultExtension = "." + RXULM.Export.DEFAULT_EXTENSION;
-        fp.defaultString = "domains." + RXULM.Export.DEFAULT_EXTENSION;
+        fp.defaultExtension = "." + XFPerms.Export.DEFAULT_EXTENSION;
+        fp.defaultString = "domains." + XFPerms.Export.DEFAULT_EXTENSION;
         fp.init(
           window,
-          RXULM.stringBundle.GetStringFromName("rxm.exportSelected.title"),
+          XFPerms.stringBundle.GetStringFromName("rxm.exportSelected.title"),
           Ci.nsIFilePicker.modeSave);
         fp.appendFilters(Ci.nsIFilePicker.filterAll);
 
@@ -246,11 +223,11 @@ RXULMChrome.Manager = {
 
         if ((Ci.nsIFilePicker.returnOK == winResult) ||
             (Ci.nsIFilePicker.returnReplace == winResult)) {
-          success = RXULM.Export.exportDomains(domains, fp.file);
+          success = XFPerms.Export.exportPermissions(permissions, fp.file);
         }
       } catch (e) {
         success = false;
-        this._logger.error("exportDomains\n" + e);
+        this._logger.error("exportPermissions\n" + e);
       }
 
       // if an error happens, alert the user.
@@ -260,32 +237,32 @@ RXULMChrome.Manager = {
     } else {
       // how did we get here???
       this._logger.error(
-        "exportDomains. Tried to export with no domains selected.");
+        "exportPermissions. Tried to export with no permissions selected.");
     }
   },
 
   /**
    * Displays a file selection dialog to choose the file to import from. If
-   * chosen, the domains will be imported from that file.
+   * chosen, the permissions will be imported from that file.
    */
-  importDomains : function(aEvent) {
-    this._logger.debug("importDomains");
+  importPermissions : function(aEvent) {
+    this._logger.debug("importPermissions");
 
     let success = true;
 
     try {
       // only import the script when necessary.
-      Components.utils.import("chrome://rxm-modules/content/rxmExport.js");
+      Components.utils.import("chrome://rxm-modules/content/export.js");
 
       let fp =
         Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
       let winResult;
 
       // set up the dialog.
-      fp.defaultExtension = "." + RXULM.Export.DEFAULT_EXTENSION;
+      fp.defaultExtension = "." + XFPerms.Export.DEFAULT_EXTENSION;
       fp.init(
         window,
-        RXULM.stringBundle.GetStringFromName("rxm.import.title"),
+        XFPerms.stringBundle.GetStringFromName("rxm.import.title"),
         Ci.nsIFilePicker.modeOpen);
       fp.appendFilters(Ci.nsIFilePicker.filterAll);
 
@@ -294,32 +271,32 @@ RXULMChrome.Manager = {
 
       if ((Ci.nsIFilePicker.returnOK == winResult) ||
           (Ci.nsIFilePicker.returnReplace == winResult)) {
-        let result = RXULM.Export.importDomains(fp.file);
+        let result = XFPerms.Export.importPermissions(fp.file);
 
         success = result.success;
 
         if (success) {
-          let importCount = result.domains.length;
+          let importCount = result.permissions.length;
           let failCount = result.invalids.length;
           let message =
             ((1 == importCount) ?
-             RXULM.stringBundle.GetStringFromName(
+             XFPerms.stringBundle.GetStringFromName(
               "rxm.import.importedOne.label") :
-             RXULM.stringBundle.formatStringFromName(
+             XFPerms.stringBundle.formatStringFromName(
               "rxm.import.importedMany.label", [ importCount ], 1));
 
           if (0 < failCount) {
             message += "\n";
             message +=
               ((1 == failCount) ?
-               RXULM.stringBundle.GetStringFromName(
+               XFPerms.stringBundle.GetStringFromName(
                 "rxm.import.invalidOne.label") :
-               RXULM.stringBundle.formatStringFromName(
+               XFPerms.stringBundle.formatStringFromName(
                 "rxm.import.invalidMany.label", [ failCount ], 1));
           }
 
           Services.prompt.alert(
-            window, RXULM.stringBundle.GetStringFromName("rxm.import.title"),
+            window, XFPerms.stringBundle.GetStringFromName("rxm.import.title"),
             message);
         }
       }
@@ -327,7 +304,7 @@ RXULMChrome.Manager = {
       this._loadPermissions();
     } catch (e) {
       success = false;
-      this._logger.error("importDomains\n" + e);
+      this._logger.error("importPermissions\n" + e);
     }
 
     if (!success) {
@@ -365,12 +342,12 @@ RXULMChrome.Manager = {
     this._logger.trace("_alert");
 
     Services.prompt.alert(
-      window, RXULM.stringBundle.GetStringFromName(aTitleKey),
-      RXULM.stringBundle.GetStringFromName(aContentKey));
+      window, XFPerms.stringBundle.GetStringFromName(aTitleKey),
+      XFPerms.stringBundle.GetStringFromName(aContentKey));
   }
 };
 
 window.addEventListener(
-  "load", function() { RXULMChrome.Manager.init(); }, false);
+  "load", function() { XFPermsChrome.Manager.init(); }, false);
 window.addEventListener(
-  "unload", function() { RXULMChrome.Manager.uninit(); }, false);
+  "unload", function() { XFPermsChrome.Manager.uninit(); }, false);

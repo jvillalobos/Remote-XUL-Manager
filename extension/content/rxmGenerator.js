@@ -20,16 +20,16 @@ const Ci = Components.interfaces;
 const INSTALLER_EXTENSION = "xpi";
 
 /**
- * RXULMChrome namespace.
+ * XFPermsChrome namespace.
  */
-if ("undefined" == typeof(RXULMChrome)) {
-  var RXULMChrome = {};
+if ("undefined" == typeof(XFPermsChrome)) {
+  var XFPermsChrome = {};
 };
 
 /**
- * Remote XUL Installer Generator dialog controller.
+ * Installer Generator dialog controller.
  */
-RXULMChrome.Generator = {
+XFPermsChrome.Generator = {
 
   /* Logger for this object. */
   _logger : null,
@@ -39,10 +39,10 @@ RXULMChrome.Generator = {
    */
   init : function() {
     Components.utils.import("resource://gre/modules/Services.jsm");
-    Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
-    Components.utils.import("chrome://rxm-modules/content/rxmGenerator.js");
+    Components.utils.import("chrome://rxm-modules/content/common.js");
+    Components.utils.import("chrome://rxm-modules/content/generator.js");
 
-    this._logger = RXULM.getLogger("RXULMChrome.Generator");
+    this._logger = XFPerms.getLogger("XFPermsChrome.Generator");
     this._logger.debug("init");
     this._loadPermissions();
   },
@@ -51,9 +51,6 @@ RXULMChrome.Generator = {
    * Uninitializes the object.
    */
   uninit : function() {
-    Components.utils.unload("chrome://rxm-modules/content/rxmGenerator.js");
-    Components.utils.unload("chrome://rxm-modules/content/rxmCommon.js");
-    Components.utils.unload("resource://gre/modules/Services.jsm");
   },
 
   /**
@@ -63,24 +60,24 @@ RXULMChrome.Generator = {
     this._logger.trace("_loadPermissions");
 
     try {
-      let domains = document.getElementById("domains");
-      let allowed = RXULM.Permissions.getAll();
+      let permissions = document.getElementById("domains");
+      let allowed = XFPerms.Permissions.getAll();
       let allowedCount = allowed.length;
       let item;
 
       for (let i = 0; i < allowedCount; i++) {
         item = document.createElement("listitem");
 
-        if (RXULM.Permissions.LOCAL_FILES != allowed[i]) {
+        if (XFPerms.Permissions.LOCAL_FILES != allowed[i]) {
           item.setAttribute("label", allowed[i]);
           item.setAttribute("value", allowed[i]);
         } else {
           item.setAttribute(
-            "label", RXULM.stringBundle.GetStringFromName("rxm.file.label"));
-          item.setAttribute("value", RXULM.Permissions.LOCAL_FILES);
+            "label", XFPerms.stringBundle.GetStringFromName("rxm.file.label"));
+          item.setAttribute("value", XFPerms.Permissions.LOCAL_FILES);
         }
 
-        domains.appendChild(item);
+        permissions.appendChild(item);
       }
     } catch (e) {
       this._logger.error("_loadPermissions\n" + e);
@@ -111,17 +108,17 @@ RXULMChrome.Generator = {
 
     let selected = document.getElementById("domains").selectedItems;
     let count = selected.length;
-    let domains = [];
+    let permissions = [];
 
     try {
       for (let i = 0; i < count; i ++) {
-        domains.push(selected[i].getAttribute("value"));
+        permissions.push(selected[i].getAttribute("value"));
       }
     } catch (e) {
       this._logger.error("generateInstaller\n" + e);
     }
 
-    if (0 < domains.length) {
+    if (0 < permissions.length) {
       try {
         let fp =
           Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
@@ -132,7 +129,7 @@ RXULMChrome.Generator = {
         fp.defaultString = "rxm-installer." + INSTALLER_EXTENSION;
         fp.init(
           window,
-          RXULM.stringBundle.GetStringFromName("rxm.generateInstaller.title"),
+          XFPerms.stringBundle.GetStringFromName("rxm.generateInstaller.title"),
           Ci.nsIFilePicker.modeSave);
         fp.appendFilters(Ci.nsIFilePicker.filterAll);
 
@@ -146,8 +143,9 @@ RXULMChrome.Generator = {
             document.getElementById("warning").value.trim().
               replace(/\n/g, "\\n");
 
-          RXULM.Generator.generateInstaller(fp.file, domains, title, warning);
-          RXULM.runWithDelay(function() { window.close(); }, 0);
+          XFPerms.Generator.generateInstaller(
+            fp.file, permissions, title, warning);
+          XFPerms.runWithDelay(function() { window.close(); }, 0);
         }
       } catch (e) {
         this._logger.error("generateInstaller\n" + e);
@@ -155,19 +153,19 @@ RXULMChrome.Generator = {
         // if an error happens, alert the user.
         Services.prompt.alert(
           window,
-          RXULM.stringBundle.GetStringFromName("rxm.generateInstaller.title"),
-          RXULM.stringBundle.GetStringFromName("rxm.generateError.label"));
+          XFPerms.stringBundle.GetStringFromName("rxm.generateInstaller.title"),
+          XFPerms.stringBundle.GetStringFromName("rxm.generateError.label"));
       }
     } else {
       // how did we get here???
       this._logger.error(
-        "generateInstaller. Tried to generate installer with no domains " +
+        "generateInstaller. Tried to generate installer with no permissions " +
         "selected.");
     }
   }
 };
 
 window.addEventListener(
-  "load", function() { RXULMChrome.Generator.init(); }, false);
+  "load", function() { XFPermsChrome.Generator.init(); }, false);
 window.addEventListener(
-  "unload", function() { RXULMChrome.Generator.uninit(); }, false);
+  "unload", function() { XFPermsChrome.Generator.uninit(); }, false);

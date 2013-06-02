@@ -14,7 +14,7 @@
  * limitations under the License.
  **/
 
-var EXPORTED_SYMBOLS = [ "RXULM" ];
+var EXPORTED_SYMBOLS = [ "XFPerms" ];
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
@@ -23,13 +23,13 @@ const FIREFOX_MOBILE_ID = "{a23983c0-fd0e-11dc-95ff-0800200c9a66}";
 const FIREFOX_ANDROID_ID = "{aa3c5121-dab2-40e2-81ca-7ea25febc110}";
 
 Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import("chrome://rxm-modules/content/log4moz.js");
+Components.utils.import("resource://gre/modules/services-common/log4moz.js");
 
 /**
- * RXULM namespace.
+ * XFPerms namespace.
  */
-if ("undefined" == typeof(RXULM)) {
-  var RXULM = {
+if ("undefined" == typeof(XFPerms)) {
+  var XFPerms = {
     /* Array of timer references, keeps timeouts alive. */
     _timers : [],
 
@@ -41,11 +41,12 @@ if ("undefined" == typeof(RXULM)) {
       // The basic formatter will output lines like:
       // DATE/TIME  LoggerName LEVEL  (log message)
       let formatter = new Log4Moz.BasicFormatter();
-      let root = Log4Moz.repository.rootLogger;
       let appender;
 
+      this._logger = Log4Moz.repository.getLogger("XFPerms");
+
       if (!this.isMobile()) {
-        let logFile = this.getRXMDirectory();
+        let logFile = this.getDirectory();
 
         logFile.append("log.txt");
         // this appender will log to the file system.
@@ -54,12 +55,9 @@ if ("undefined" == typeof(RXULM)) {
         appender = new Log4Moz.ConsoleAppender(formatter);
       }
 
-      root.level = Log4Moz.Level["All"];
+      this._logger.level = Log4Moz.Level["All"];
       appender.level = Log4Moz.Level["Warn"]; // change this to adjust level.
-      root.addAppender(appender);
-
-      // get a Logger specifically for this object.
-      this._logger = this.getLogger("RXULM");
+      this._logger.addAppender(appender);
 
       this.stringBundle =
         Services.strings.createBundle(
@@ -67,7 +65,7 @@ if ("undefined" == typeof(RXULM)) {
     },
 
     /**
-     * Creates a logger repository from Log4Moz.
+     * Creates a logger for other objects to use.
      * @param aName the name of the logger to create.
      * @param aLevel (optional) the logger level.
      * @return the created logger.
@@ -76,6 +74,7 @@ if ("undefined" == typeof(RXULM)) {
       let logger = Log4Moz.repository.getLogger(aName);
 
       logger.level = Log4Moz.Level[(aLevel ? aLevel : "All")];
+      logger.parent = this._logger;
 
       return logger;
     },
@@ -97,7 +96,7 @@ if ("undefined" == typeof(RXULM)) {
      * The directory is created if it doesn't exist.
      * @return reference (nsIFile) to the directory.
      */
-    getRXMDirectory : function() {
+    getDirectory : function() {
       Components.utils.import("resource://gre/modules/FileUtils.jsm");
 
       return FileUtils.getDir("ProfD", [ "RemoteXULManager" ], true);
@@ -142,12 +141,12 @@ if ("undefined" == typeof(RXULM)) {
 
       let domain = aDomain;
 
-      if (null == RXULM.Permissions) {
+      if (null == XFPerms.Permissions) {
         Components.utils.import(
-          "chrome://rxm-modules/content/rxmPermissions.js");
+          "chrome://rxm-modules/content/permissions.js");
       }
 
-      if ((RXULM.Permissions.LOCAL_FILES != aDomain) &&
+      if ((XFPerms.Permissions.LOCAL_FILES != aDomain) &&
           (0 != aDomain.indexOf("http://")) &&
           (0 != aDomain.indexOf("https://"))) {
         domain = "http://" + aDomain;
@@ -162,5 +161,5 @@ if ("undefined" == typeof(RXULM)) {
    */
   (function() {
     this.init();
-  }).apply(RXULM);
+  }).apply(XFPerms);
 }

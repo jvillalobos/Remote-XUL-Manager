@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-  - Copyright 2010 Jorge Villalobos
+  - Copyright 2013 Jorge Villalobos
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -45,15 +45,15 @@
         <menupopup>
           <menuitem id="import-menuitem" label="&remotexulmanager.import.label;"
             accesskey="&remotexulmanager.import.accesskey;"
-            oncommand="RXULMChrome.Manager.importDomains(event);" />
+            oncommand="XFPermsChrome.Manager.importPermissions(event);" />
           <menuitem id="export-menuitem" label="&remotexulmanager.export.label;"
             accesskey="&remotexulmanager.export.accesskey;" disabled="true"
-            oncommand="RXULMChrome.Manager.exportDomains(event);" />
+            oncommand="XFPermsChrome.Manager.exportPermissions(event);" />
           <menuseparator />
           <menuitem id="generate-menuitem"
             label="&remotexulmanager.generate.label;"
             accesskey="&remotexulmanager.generate.accesskey;"
-            oncommand="RXULMChrome.Manager.launchGenerator(event);" />
+            oncommand="XFPermsChrome.Manager.launchGenerator(event);" />
           <menuseparator />
           <menuitem id="close-menuitem" command="close-command" key="close-key"
             label="&remotexulmanager.close.label;"
@@ -66,16 +66,16 @@
   <vbox id="window-content" flex="1">
     <label control="domains" value="&remotexulmanager.allowed.label;" />
     <listbox id="domains" rows="15" seltype="multiple" flex="1"
-      onselect="RXULMChrome.Manager.select(event);" />
+      onselect="XFPermsChrome.Manager.select(event);" />
     <hbox id="button-container">
       <button id="add" label="&remotexulmanager.add.label;"
         accesskey="&remotexulmanager.add.accesskey;"
-        oncommand="RXULMChrome.Manager.add(event);" />
+        oncommand="XFPermsChrome.Manager.add(event);" />
       <spacer flex="1" />
       <button id="remove" disabled="true"
         label="&remotexulmanager.remove.label;"
         accesskey="&remotexulmanager.remove.accesskey;"
-        oncommand="RXULMChrome.Manager.remove(event);" />
+        oncommand="XFPermsChrome.Manager.remove(event);" />
     </hbox>
   </vbox>
 

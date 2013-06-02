@@ -1,5 +1,5 @@
 ##
-# Copyright 2011 Jorge Villalobos
+# Copyright 2013 Jorge Villalobos
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,3 +23,6 @@ title_localized :=
 
 # Localized version of the warning message (optional, no quotes).
 warning_localized :=
+
+# Show a message or not on boot
+silent := false

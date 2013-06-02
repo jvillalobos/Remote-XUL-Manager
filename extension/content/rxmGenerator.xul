@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-  - Copyright 2011 Jorge Villalobos
+  - Copyright 2013 Jorge Villalobos
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
   buttonlabelaccept="&remotexulmanager.generate.label;"
   buttonaccesskeyaccept="&remotexulmanager.generate.accesskey;"
   buttondisabledaccept="true"
-  ondialogaccept="RXULMChrome.Generator.generateInstaller(event);"
+  ondialogaccept="XFPermsChrome.Generator.generateInstaller(event);"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <script type="application/x-javascript"
@@ -41,6 +41,7 @@
 
   <keyset>
     <key id="close-key" key="W" modifiers="accel" command="close-command" />
+    <key id="close-key-2" keycode="VK_ESCAPE" command="close-command" />
   </keyset>
 
   <vbox id="window-content" flex="1">
@@ -49,7 +50,7 @@
     </description>
     <label control="domains" value="&remotexulmanager.selectDomains.label;" />
     <listbox id="domains" rows="15" seltype="multiple" flex="1"
-      onselect="RXULMChrome.Generator.select(event);" />
+      onselect="XFPermsChrome.Generator.select(event);" />
     <groupbox>
       <description id="labels-intro">
         &remotexulmanager.labelsIntro.label;

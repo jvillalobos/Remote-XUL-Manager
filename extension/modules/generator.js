@@ -28,10 +28,10 @@ const FILE_TRUNCATE = 0x20;
 // The location of the template files.
 const TEMPLATES_URL = "chrome://remotexulmanager/content/templates/";
 
-Components.utils.import("chrome://rxm-modules/content/rxmCommon.js");
-Components.utils.import("chrome://rxm-modules/content/rxmPermissions.js");
+Components.utils.import("chrome://rxm-modules/content/common.js");
+Components.utils.import("chrome://rxm-modules/content/permissions.js");
 
-RXULM.Generator = {
+XFPerms.Generator = {
   /* Logger for this object. */
   _logger : null,
   /* Generated add-on id. */
@@ -41,19 +41,19 @@ RXULM.Generator = {
    * Initializes the object.
    */
   init : function() {
-    this._logger = RXULM.getLogger("RXULM.Generator");
+    this._logger = XFPerms.getLogger("XFPerms.Generator");
     this._logger.debug("init");
   },
 
   /**
-   * Generates an installer package from the selected domains and with the given
-   * configuration parameters.
+   * Generates an installer package from the selected permissions and with the
+   * given configuration parameters.
    * @param aFile the nsIFile where the package will be written to.
-   * @param aDomains the list of domains to include in the package.
+   * @param aPermissions the list of permissions to include in the package.
    * @param aTitle an optional localized title for dialogs in the installer.
    * @param aWarning an optional localizaed warning message.
    */
-  generateInstaller : function(aFile, aDomains, aTitle, aWarning) {
+  generateInstaller : function(aFile, aPermissions, aTitle, aWarning) {
     this._logger.debug("generateInstaller");
 
     let zipWriter =
@@ -64,9 +64,9 @@ RXULM.Generator = {
     // prepare the contents of the package.
     this._generateId();
     rdfFile =
-      this._getInstallFile("install.rdf", aDomains, aTitle, aWarning);
+      this._getInstallFile("install.rdf", aPermissions, aTitle, aWarning);
     bootFile =
-      this._getInstallFile("bootstrap.js", aDomains, aTitle, aWarning);
+      this._getInstallFile("bootstrap.js", aPermissions, aTitle, aWarning);
 
     try {
       // write the package.
@@ -106,12 +106,12 @@ RXULM.Generator = {
    * Gets the installer file with its contents replaced with the values of the
    * parameters.
    * @param aFileName the name of the file to get.
-   * @param aDomains the list of domains to include in the package.
+   * @param aPermissions the list of permissions to include in the package.
    * @param aTitle an optional localized title for dialogs in the installer.
    * @param aWarning an optional localizaed warning message.
    * @return nsIFile pointing to the installer file.
    */
-  _getInstallFile : function(aFileName, aDomains, aTitle, aWarning) {
+  _getInstallFile : function(aFileName, aPermissions, aTitle, aWarning) {
     this._logger.trace("_getInstallFile");
 
     let contents = this._getUrlContents(TEMPLATES_URL + aFileName);
@@ -119,7 +119,8 @@ RXULM.Generator = {
     // replace all parameters in the template.
     contents = contents.replace(/\$\(ID\)/g, this._generatedId);
     contents =
-      contents.replace(/\$\(DOMAINS\)/g, this._domainArrayToString(aDomains));
+      contents.replace(
+        /\$\(PERMISSIONS\)/g, this._createPermissionsString(aPermissions));
 
     if (("string" == typeof(aTitle)) && (0 < aTitle.length)) {
       contents = contents.replace(/\$\(TITLE\)/g, aTitle);
@@ -132,6 +133,8 @@ RXULM.Generator = {
     } else {
       contents = contents.replace(/\$\(WARNING\)/g, "");
     }
+    // only allow silent installs with the custom build option.
+    contents = contents.replace(/\$\(SILENT\)/g, "false");
 
     return this._writeFile(aFileName, contents);
   },
@@ -174,25 +177,26 @@ RXULM.Generator = {
   },
 
   /**
-   * Converts the domains array into a string to be used in the installer files.
-   * @param aDomains the array of domains to include.
-   * @return string that represents the domain array.
+   * Converts the permissions array into a string to be used in the installer
+   * files.
+   * @param aPermissions the array of permissions to include.
+   * @return string that represents the permissions array.
    */
-  _domainArrayToString : function(aDomains) {
-    this._logger.trace("_domainArrayToString");
+  _createPermissionsString : function(aPermissions) {
+    this._logger.trace("_createPermissionsString");
 
-    let domainString = "";
-    let domainCount = aDomains.length;
+    let permsString = "";
+    let permsCount = aPermissions.length;
 
-    for (let i = 0; i < domainCount; i++) {
+    for (let i = 0; i < permsCount; i++) {
       if (0 != i) {
-        domainString += ",";
+        permsString += ",";
       }
 
-      domainString += "\"" + aDomains[i] + "\"";
+      permsString += "\"" + aPermissions[i] + "\"";
     }
 
-    return domainString;
+    return permsString;
   },
 
   /**
@@ -208,7 +212,7 @@ RXULM.Generator = {
     let stream =
       Cc["@mozilla.org/network/file-output-stream;1"].
         createInstance(Ci.nsIFileOutputStream);
-    let installFile = RXULM.getRXMDirectory();
+    let installFile = XFPerms.getDirectory();
 
     installFile.append(aFileName);
 
@@ -233,4 +237,4 @@ RXULM.Generator = {
  */
 (function() {
   this.init();
-}).apply(RXULM.Generator);
+}).apply(XFPerms.Generator);
