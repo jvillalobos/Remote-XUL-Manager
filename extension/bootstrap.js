@@ -143,9 +143,6 @@ let RXM = {
           if ("menuWebDeveloperPopup" == aParentId) {
             parent.insertBefore(
               menuitem, doc.getElementById("devToolsEndSeparator"));
-          } else if ("appmenu_webDeveloper_popup" == aParentId) {
-            parent.insertBefore(
-              menuitem, doc.getElementById("appmenu_pageInspect").nextSibling);
           } else {
             parent.appendChild(menuitem);
           }
