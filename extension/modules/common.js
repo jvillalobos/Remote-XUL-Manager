@@ -22,8 +22,17 @@ const Ci = Components.interfaces;
 const FIREFOX_MOBILE_ID = "{a23983c0-fd0e-11dc-95ff-0800200c9a66}";
 const FIREFOX_ANDROID_ID = "{aa3c5121-dab2-40e2-81ca-7ea25febc110}";
 
+var logLoaded = true;
+
+try {
+  Components.utils.import("resource://gre/modules/services-common/log4moz.js");
+} catch (e) {
+  // certain Mozilla-based applications don't have /services-common/, so let's
+  // just skip logging there.
+  logLoaded = false;
+}
+
 Components.utils.import("resource://gre/modules/Services.jsm");
-Components.utils.import("resource://gre/modules/services-common/log4moz.js");
 
 /**
  * XFPerms namespace.
@@ -37,27 +46,33 @@ if ("undefined" == typeof(XFPerms)) {
      * Initialize this object.
      */
     init : function() {
-      // Setup logging. See http://wiki.mozilla.org/Labs/JS_Modules.
-      // The basic formatter will output lines like:
-      // DATE/TIME  LoggerName LEVEL  (log message)
-      let formatter = new Log4Moz.BasicFormatter();
-      let appender;
+      if (logLoaded) {
+        // Setup logging. See http://wiki.mozilla.org/Labs/JS_Modules.
+        // The basic formatter will output lines like:
+        // DATE/TIME  LoggerName LEVEL  (log message)
+        let formatter = new Log4Moz.BasicFormatter();
+        let appender;
 
-      this._logger = Log4Moz.repository.getLogger("XFPerms");
+        this._logger = Log4Moz.repository.getLogger("XFPerms");
 
-      if (!this.isMobile()) {
-        let logFile = this.getDirectory();
+        if (!this.isMobile()) {
+          let logFile = this.getDirectory();
 
-        logFile.append("log.txt");
-        // this appender will log to the file system.
-        appender = new Log4Moz.RotatingFileAppender(logFile, formatter);
+          logFile.append("log.txt");
+          // this appender will log to the file system.
+          appender = new Log4Moz.RotatingFileAppender(logFile, formatter);
+        } else {
+          appender = new Log4Moz.ConsoleAppender(formatter);
+        }
+
+        this._logger.level = Log4Moz.Level["All"];
+        appender.level = Log4Moz.Level["Warn"]; // change this to adjust level.
+        this._logger.addAppender(appender);
       } else {
-        appender = new Log4Moz.ConsoleAppender(formatter);
+        this._logger =
+          { error : function() {}, warn : function() {}, debug : function() {},
+            trace : function() {} };
       }
-
-      this._logger.level = Log4Moz.Level["All"];
-      appender.level = Log4Moz.Level["Warn"]; // change this to adjust level.
-      this._logger.addAppender(appender);
 
       this.stringBundle =
         Services.strings.createBundle(
@@ -71,10 +86,18 @@ if ("undefined" == typeof(XFPerms)) {
      * @return the created logger.
      */
     getLogger : function(aName, aLevel) {
-      let logger = Log4Moz.repository.getLogger(aName);
+      let logger;
 
-      logger.level = Log4Moz.Level[(aLevel ? aLevel : "All")];
-      logger.parent = this._logger;
+      if (logLoaded) {
+        logger = Log4Moz.repository.getLogger(aName);
+
+        logger.level = Log4Moz.Level[(aLevel ? aLevel : "All")];
+        logger.parent = this._logger;
+      } else {
+        logger =
+          { error : function() {}, warn : function() {}, debug : function() {},
+            trace : function() {} };
+      }
 
       return logger;
     },
