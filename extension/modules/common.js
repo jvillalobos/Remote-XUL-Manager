@@ -60,7 +60,7 @@ if ("undefined" == typeof(XFPerms)) {
 
           logFile.append("log.txt");
           // this appender will log to the file system.
-          appender = new Log4Moz.RotatingFileAppender(logFile, formatter);
+          appender = new Log4Moz.BoundedFileAppender(logFile.path, formatter);
         } else {
           appender = new Log4Moz.ConsoleAppender(formatter);
         }
