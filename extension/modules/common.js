@@ -75,7 +75,7 @@ if ("undefined" == typeof(XFPerms)) {
       } else {
         this._logger =
           { error : function() {}, warn : function() {}, debug : function() {},
-            trace : function() {} };
+            trace : function() {}, info : function() {} };
       }
 
       this.stringBundle =
@@ -100,7 +100,7 @@ if ("undefined" == typeof(XFPerms)) {
       } else {
         logger =
           { error : function() {}, warn : function() {}, debug : function() {},
-            trace : function() {} };
+            trace : function() {}, info : function() {} };
       }
 
       return logger;
