@@ -3,13 +3,13 @@ Remote XUL (XUL through HTTP) has been removed from Firefox 4 (see `bug 546857`_
 **How to use on Desktop Firefox (and SeaMonkey)**
 
 1. Click on the Firefox button on the top left, then select Web Developer, and finally Remote XUL Manager to open the management window. On Mac OS and some other systems, the menu item is accessible from Tools > Web Developer > Remote XUL Manager.
-2. To add a domain, click on the Add button and then enter the domain name of the site you want to add to the list (*www.mozilla.org*, for example).
+2. To add a domain, click on the Add button and then enter the domain name of the site you want to add to the list (*https://www.mozilla.org*, for example). Note that the scheme (http or https) is required on Firefox 42 and above.
 3. That's it! You should be able to access the site again without any problems.
 
 **How to use on Mobile Firefox (version 1.1 and above)**
 
 1. Enter *about:remotexul* in the address bar.
-2. To add a domain, click on the Add button and then enter the domain name of the site you want to add to the list (*www.mozilla.org*, for example).
+2. To add a domain, click on the Add button and then enter the domain name of the site you want to add to the list (*https://www.mozilla.org*, for example). Note that the scheme (http or https) is required on Firefox 42 and above.
 3. That's it! You should be able to access the site again without any problems.
 4. It's recommended that you bookmark the Remote XUL page so that it's easy to come back to it.
 
