@@ -65,8 +65,8 @@ XFPerms.Permissions = {
         permission = enumerator.getNext().QueryInterface(Ci.nsIPermission);
 
         if ((ALLOW_REMOTE_XUL == permission.type) &&
-            (this.LOCAL_FILES != permission.host)) {
-          list.push(permission.host);
+            (this.LOCAL_FILES != permission.principal.URI.host)) {
+          list.push(permission.principal.URI.host);
         }
       }
 
@@ -119,7 +119,9 @@ XFPerms.Permissions = {
 
     try {
       if (this.LOCAL_FILES != aDomain) {
-        Services.perms.remove(aDomain, ALLOW_REMOTE_XUL);
+        let domain = XFPerms.addProtocol(aDomain);
+        let uri = Services.io.newURI(domain, null, null)
+        Services.perms.remove(uri, ALLOW_REMOTE_XUL);
       } else {
         Services.prefs.setBoolPref(LOCAL_FILE_PREF, false);
       }
