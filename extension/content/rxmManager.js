@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Jorge Villalobos
+ * Copyright 2015 Jorge Villalobos
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ XFPermsChrome.Manager = {
   add : function(aEvent) {
     this._logger.debug("add");
 
-    let domain = { value : "" };
+    let origin = { value : "" };
     let promptResponse;
 
     promptResponse =
@@ -108,10 +108,10 @@ XFPermsChrome.Manager = {
         window, XFPerms.stringBundle.GetStringFromName("rxm.addDomain.title"),
         XFPerms.stringBundle.formatStringFromName(
           "rxm.enterDomain.label", [ XFPerms.Permissions.LOCAL_FILES ], 1),
-        domain, null, { value : false });
+        origin, null, { value : false });
 
     if (promptResponse) {
-      let success = XFPerms.Permissions.add(XFPerms.addProtocol(domain.value));
+      let success = XFPerms.Permissions.add(origin.value);
 
       if (success) {
         this._loadPermissions();
@@ -184,15 +184,11 @@ XFPermsChrome.Manager = {
   exportPermissions : function(aEvent) {
     this._logger.debug("exportPermissions");
 
-    let selected = document.getElementById("domains").selectedItems;
-    let count = selected.length;
     let permissions = [];
-    let domain;
 
     try {
-      for (let i = 0; i < count; i ++) {
-        domain = selected[i].getAttribute("value");
-        permissions.push(XFPerms.addProtocol(domain));
+      for (let origin of document.getElementById("domains").selectedItems) {
+        permissions.push(origin.getAttribute("value"));
       }
     } catch (e) {
       this._logger.error("exportPermissions\n" + e);

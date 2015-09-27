@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Jorge Villalobos
+ * Copyright 2015 Jorge Villalobos
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ XFPerms.Permissions = {
   /* Logger for this object. */
   _logger : null,
 
-  /* "Domain" identifier for all local files. */
+  /* "Origin" identifier for all local files. */
   get LOCAL_FILES() { return "<file>"; },
 
   /**
@@ -42,14 +42,15 @@ XFPerms.Permissions = {
   },
 
   /**
-   * Returns all domains that have remote XUL permissions.
-   * @return array of strings of the domains that have remote XUL permissions.
+   * Returns all origins that have remote XUL permissions.
+   * @return array of strings of the origins that have remote XUL permissions.
    */
   getAll : function() {
     this._logger.debug("getAll");
 
     let list = [];
     let permission;
+    let origin;
 
     try  {
       let enumerator = Services.perms.enumerator;
@@ -64,9 +65,12 @@ XFPerms.Permissions = {
       while (enumerator.hasMoreElements()) {
         permission = enumerator.getNext().QueryInterface(Ci.nsIPermission);
 
-        if ((ALLOW_REMOTE_XUL == permission.type) &&
-            (this.LOCAL_FILES != permission.principal.URI.host)) {
-          list.push(permission.principal.URI.host);
+        if (ALLOW_REMOTE_XUL == permission.type) {
+          origin = permission.principal.URI.prePath;
+
+          if (this.LOCAL_FILES != origin) {
+            list.push(origin);
+          }
         }
       }
 
@@ -81,18 +85,18 @@ XFPerms.Permissions = {
   },
 
   /**
-   * Add a domain to the remote XUL list.
-   * @param aDomain the domain to add. null to add all local files.
+   * Add an origin to the remote XUL list.
+   * @param aOrigin the origin to add. null to add all local files.
    * @return true if successful, false otherwise.
    */
-  add : function(aDomain) {
-    this._logger.debug("add: " + aDomain);
+  add : function(aOrigin) {
+    this._logger.debug("add: " + aOrigin);
 
     let success = false;
 
     try {
-      if (this.LOCAL_FILES != aDomain) {
-        let uri = this._getURI(aDomain);
+      if (this.LOCAL_FILES != aOrigin) {
+        let uri = this._getURI(aOrigin);
 
         Services.perms.add(uri, ALLOW_REMOTE_XUL, ALLOW);
       } else {
@@ -108,19 +112,19 @@ XFPerms.Permissions = {
   },
 
   /**
-   * Remove a domain from the remote XUL list.
-   * @param aDomain the domain to remove.
+   * Remove an origin from the remote XUL list.
+   * @param aOrigin the origin to remove.
    * @return true if successful, false otherwise.
    */
-  remove : function(aDomain) {
-    this._logger.debug("remove: " + aDomain);
+  remove : function(aOrigin) {
+    this._logger.debug("remove: " + aOrigin);
 
     let success = false;
 
     try {
-      if (this.LOCAL_FILES != aDomain) {
-        let domain = XFPerms.addProtocol(aDomain);
-        let uri = Services.io.newURI(domain, null, null)
+      if (this.LOCAL_FILES != aOrigin) {
+        let uri = this._getURI(aOrigin);
+
         Services.perms.remove(uri, ALLOW_REMOTE_XUL);
       } else {
         Services.prefs.setBoolPref(LOCAL_FILE_PREF, false);
@@ -135,14 +139,14 @@ XFPerms.Permissions = {
   },
 
   /**
-   * Returns an nsIURI version of the domain string.
-   * @param aDomainString the user-provided domain string.
-   * @return the nsIURI that corresponds to the domain string.
+   * Returns an nsIURI version of the origin string.
+   * @param aOrigin the user-provided origin string.
+   * @return the nsIURI that corresponds to the origin string.
    */
-  _getURI : function(aDomainString) {
+  _getURI : function(aOrigin) {
     this._logger.trace("_getURI");
 
-    return Services.io.newURI(aDomainString, null, null);
+    return Services.io.newURI(aOrigin, null, null);
   }
 };
 

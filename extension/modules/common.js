@@ -1,5 +1,5 @@
 /**
- * Copyright 2013 Jorge Villalobos
+ * Copyright 2015 Jorge Villalobos
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ const FIREFOX_ANDROID_ID = "{aa3c5121-dab2-40e2-81ca-7ea25febc110}";
 var logLoaded = true;
 
 try {
-  Components.utils.import("resource://gre/modules/services-common/log4moz.js");
+  Components.utils.import("resource://gre/modules/Log.jsm");
+  var Log4Moz = Log;
 } catch (e) {
-  // certain Mozilla-based applications don't have /services-common/, so let's
-  // just skip logging there.
+  // if we can't find the logger, don't log anything.
   logLoaded = false;
 }
 
@@ -70,7 +70,7 @@ if ("undefined" == typeof(XFPerms)) {
         }
 
         this._logger.level = Log4Moz.Level["All"];
-        appender.level = Log4Moz.Level["Warn"]; // change this to adjust level.
+        appender.level = Log4Moz.Level["All"]; // change this to adjust level.
         this._logger.addAppender(appender);
       } else {
         this._logger =
