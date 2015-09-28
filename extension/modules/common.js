@@ -70,7 +70,7 @@ if ("undefined" == typeof(XFPerms)) {
         }
 
         this._logger.level = Log4Moz.Level["All"];
-        appender.level = Log4Moz.Level["All"]; // change this to adjust level.
+        appender.level = Log4Moz.Level["Warn"]; // change this to adjust level.
         this._logger.addAppender(appender);
       } else {
         this._logger =
@@ -175,7 +175,8 @@ if ("undefined" == typeof(XFPerms)) {
 
       if ((XFPerms.Permissions.LOCAL_FILES != aDomain) &&
           (0 != aDomain.indexOf("http://")) &&
-          (0 != aDomain.indexOf("https://"))) {
+          (0 != aDomain.indexOf("https://")) &&
+          (0 != aDomain.indexOf("ftp://"))) {
         domain = "http://" + aDomain;
       }
 
