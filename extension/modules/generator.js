@@ -156,7 +156,9 @@ XFPerms.Generator = {
     let unicodeConverter =
       Cc["@mozilla.org/intl/scriptableunicodeconverter"].
         createInstance(Ci.nsIScriptableUnicodeConverter);
-    let channel=ioService.newChannel(aURL, null, null);
+    let uri = ioService.newURI(aURL, null, null);
+    let channel =
+      ioService.newChannelFromURI2(uri, null, null, null, null, null);
     let input = channel.open();
     let contents;
     let result;
