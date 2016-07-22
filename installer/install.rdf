@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
-  - Copyright 2013 Jorge Villalobos
+  - Copyright 2016 Jorge Villalobos
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -23,10 +23,11 @@
     <em:id>$(ID)@rxm.xulforge.com</em:id>
     <em:name>Remote XUL Installer (generated - $(ID))</em:name>
     <em:description>Automatically installs a set of domains to the Remote XUL whitelist.</em:description>
-    <em:version>1.3</em:version>
+    <em:version>1.3.2</em:version>
     <em:creator>Remore XUL Manager Generator</em:creator>
     <em:homepageURL>http://github.com/jvillalobos/Remote-XUL-Manager</em:homepageURL>
     <em:bootstrap>true</em:bootstrap>
+    <em:multiprocessCompatible>true</em:multiprocessCompatible>
     <em:type>2</em:type>
 
     <!-- Mozilla Firefox -->
@@ -34,7 +35,7 @@
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>42.0</em:minVersion>
-        <em:maxVersion>43.*</em:maxVersion>
+        <em:maxVersion>49.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
@@ -52,7 +53,7 @@
       <Description>
         <em:id>{aa3c5121-dab2-40e2-81ca-7ea25febc110}</em:id>
         <em:minVersion>42.0</em:minVersion>
-        <em:maxVersion>43.*</em:maxVersion>
+        <em:maxVersion>49.*</em:maxVersion>
       </Description>
     </em:targetApplication>
 
