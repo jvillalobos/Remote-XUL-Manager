@@ -1,3 +1,5 @@
+**This extension and its codebase are no longer supported**
+
 Remote XUL (XUL through HTTP) has been removed from Firefox 4 (see `bug 546857`_ for more information). But there's still a whitelist that enables Remote XUL, which can be edited using this add-on.
 
 **How to use on Desktop Firefox (and SeaMonkey)**
